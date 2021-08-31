@@ -1,2 +1,2 @@
 # dotfiles
-Doom Emacs, VIM and other configuration stuff
+Doom Emacs, VIM, ZSH and other configuration stuff
