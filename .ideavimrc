@@ -1,0 +1,107 @@
+IntelliJ IdeaVIM config
+"
+set ignorecase
+set smartcase
+set history=1000
+set visualbell
+set noerrorbells
+set incsearch " Highlight search results when typing
+set hlsearch " Highlight search results
+set relativenumber " relative numbers
+set scrolloff=3 " 3 lines above/below cursor when scrolling
+set cursorline
+
+" Emulated Plugins
+set surround
+
+" Copy to system clipboard as well
+set clipboard+=unnamed
+
+" Use Idea to join lines smartly
+set ideajoin
+
+" Multiple cursors support
+set multiple-cursors
+
+set NERDTree
+
+" These settings are from - https://github.com/Valloric/dotfiles/blob/master/intellij/ideavimrc
+
+"let mapleader = ","
+let mapleader = " "
+" let maplocalleader = ","
+map <c-n> <a-n>
+map <c-x> <a-x>
+map <c-p> <a-p>
+map g<c-n> g<a-p>
+
+" Pasting from yank history
+nnoremap <leader>y :action PasteMultiple<CR>
+
+" Use Q for formatting the current paragraph (or visual selection)
+vmap Q gq
+nmap Q gqap
+
+" These create newlines like o and O but stay in normal mode
+nmap zj o<Esc>k
+nmap zk O<Esc>j
+
+" key bindings for quickly moving between windows
+" h left, l right, k up, j down
+" nmap <leader>h <c-w>h
+" nmap <leader>l <c-w>l
+" nmap <leader>k <c-w>k
+" nmap <leader>j <c-w>j
+" Search
+nnoremap <leader>gl :action GotoLine<CR>
+nnoremap <leader>gs :action GotoSymbol<CR>
+nnoremap <leader>gf :action GotoFile<CR>
+nnoremap <leader>gc :action GotoClass<CR>
+nnoremap <leader>ga :action GotoAction<CR>
+nnoremap <leader>ff :action FindInPath<CR>
+nnoremap <leader>fr :action ReplaceInPath<CR>
+vmap <leader>ff :action FindInPath<CR>
+vmap <leader>fr :action ReplaceInPath<CR>
+
+"Optimize the guide package <leader>oi
+nnoremap <Leader>oi :action OptimizeImports<CR>
+ "Code formatting function <leader>fc
+nnoremap <leader>fc :action ReformatCode<CR>
+
+"Project management
+nnoremap <leader>pc :action CloseProject<CR>
+
+" Closing tabs
+nmap <leader>q :action CloseContent<cr>
+nmap <leader>Q :action ReopenClosedTab<cr>
+
+"nnoremap <Leader>tc :action CloseActiveTab<CR>
+
+ "Tab switch
+"nnoremap tn gt
+nnoremap tg gT
+
+" To navigate between split panes
+nmap <leader>wo :action NextSplitter<cr>
+nmap <leader>wp :action PrevSplitter<cr>
+nmap <leader>j :action PrevSplitter<cr>
+
+" Splits manipulation
+nmap <leader>ws :action SplitHorizontally<cr>
+nmap <leader>wv :action SplitVertically<cr>
+nmap <leader>wc :action Unsplit<cr>
+nmap <leader>wC :action UnsplitAll<cr>
+nmap <leader>wd :action OpenEditorInOppositeTabGroup<cr>
+nmap <leader><leader> :action VimFilePrevious<cr>
+
+" nmap <leader>ww :action JumpToLastWindow<cr>
+
+" <C-e>
+nnoremap <leader>e :action RecentFiles<CR>
+
+" Terminal
+nmap <leader>ot :action ActivateTerminalToolWindow<cr>
+
+ "Home screen mode
+nnoremap <Leader>tfs :action ToggleFullScreen<CR>
+
