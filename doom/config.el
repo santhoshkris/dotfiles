@@ -101,8 +101,7 @@
   (kbd "J") 'elfeed-goodies/split-show-next
   (kbd "K") 'elfeed-goodies/split-show-prev)
 (setq elfeed-db-directory (expand-file-name "elfeed" user-emacs-directory))
-;;Org file config for feeds - Doesn't work on Termux, no sure why!
-(setq rmh-elfeed-org-files (list "~/Org/elfeed/elfeed.org"))
+(setq rmh-elfeed-org-files (list "~/Org/elfeed.org"))
 ;; (setq elfeed-feeds (quote (
 ;;                      ("https://www.reddit.com/r/emacs.rss" reddit emacs)
 ;;                      ("https://sachachua.com/blog/category/emacs/feed" sachachua emacs)
@@ -644,3 +643,4 @@
 ;; Start maximised (cross-platf)
 (add-hook 'window-setup-hook 'toggle-frame-maximized t)
 (ace-link-setup-default)
+(setq confirm-kill-processes nil)
