@@ -16,16 +16,14 @@
   - [[#usability-enhancements][USABILITY ENHANCEMENTS]]
   - [[#visual-enhancements][VISUAL ENHANCEMENTS]]
 - [[#evaluate-elisp-expressions][EVALUATE ELISP EXPRESSIONS]]
-- [[#eaf][EAF]]
 - [[#evil][EVIL]]
 - [[#ivy][IVY]]
   - [[#ivy-posframe][IVY-POSFRAME]]
   - [[#ivy-keybindings][IVY KEYBINDINGS]]
 - [[#line-settings][LINE SETTINGS]]
 - [[#org-mode][ORG MODE]]
-- [[#org-roam--deft][Org ROAM & Deft]]
+- [[#deft][DEFT]]
 - [[#registers][REGISTERS]]
-- [[#spotify][SPOTIFY]]
 - [[#miscellaneous-settings][MISCELLANEOUS SETTINGS]]
 
 * ABOUT THIS CONFIG FILE
@@ -384,41 +382,6 @@ Changing some keybindings from their defaults to better fit with Doom Emacs, and
        :desc "Evaluate elisp in region" "r" #'eval-region))
 #+END_SRC
 
-* EAF
-EAF configurations - Emacs Application Framework - Amazing stuff!!
-
-#+Begin_src emacs-lisp
-
-(add-to-list 'load-path "~/.emacs.d/.local/straight/repos/eaf/")
-(require 'eaf)
-(require 'eaf-browser)
-(require 'eaf-pdf-viewer)
-
-(use-package eaf
-  :custom
-  (eaf-browser-continue-where-left-off t)
-  :config
-  (setq eaf-browser-enable-adblocker t)
-  (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key nil "M-q" eaf-browser-keybinding))
-
-  (require 'eaf-evil)
-
-(define-key key-translation-map (kbd "SPC")
-    (lambda (prompt)
-      (if (derived-mode-p 'eaf-mode)
-          (pcase eaf--buffer-app-name
-            ("browser" (if  (string= (eaf-call-sync "call_function" eaf--buffer-id "is_focus") "True")
-                           (kbd "SPC")
-                         (kbd eaf-evil-leader-key)))
-            ("pdf-viewer" (kbd eaf-evil-leader-key))
-            ("image-viewer" (kbd eaf-evil-leader-key))
-            (_  (kbd "SPC")))
-        (kbd "SPC"))))
-
-#+END_SRC
-
 * EVIL
 Setup some useful EVIL mode bindings
 
@@ -609,17 +572,8 @@ I set comment-line to 'SPC TAB TAB' which is a rather comfortable keybinding for
 
 #+end_src
 
-* Org ROAM & Deft
+* DEFT
 #+begin_src emacs-lisp
-(after! org-roam
-(setq org-roam-directory "~/Org/roam")
-(setq org-roam-dailies-directory "journal/"))
-(map! :leader
-      :desc "Dailies today" "n r D" #'org-roam-dailies-capture-today)
-;;(setq org-roam-dailies-capture-templates
-;;      '(("d" "default" entry "* %<%I:%M %p>: %?"
-;;         :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
-
 (after! deft 
 (setq deft-directory "~/Org"
       deft-extensions '("org" "txt")
@@ -680,20 +634,6 @@ Emacs registers are compartments where you can save text, rectangles and positio
        :desc "Point to register" "SPC" #'point-to-register))
 #+END_SRC
 
-* SPOTIFY
-Control Spotify from within EMACS
-#+begin_src emacs-lisp
-;;Control Spotify from within Emacs!
-(setq counsel-spotify-client-id "7176a0f349d14df18735d93b09d46e60")
-(setq counsel-spotify-client-secret "f7cd08f3ad784e76a268a3261f73e585")
-(map! :leader
-      (:prefix ("m" . "Music on Spotify")
-       :desc "Search track" "s" #'counsel-spotify-search-track
-       :desc "Spotify play/pause track" "x" #'counsel-spotify-toggle-play-pause
-       :desc "Spotify play previous track" "p" #'counsel-spotify-previous
-       :desc "Spotify play next track" "n" #'counsel-spotify-next))
-#+end_src
-
 * MISCELLANEOUS SETTINGS
 All the other miscellaneous stuf that makes things a bit easier
 
@@ -713,29 +653,7 @@ All the other miscellaneous stuf that makes things a bit easier
    '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
    ))
 
-(setq-default
- delete-by-moving-to-trash t                      ; Delete files to trash
- window-combination-resize t                      ; take new window space from all other windows (not just current)
- x-stretch-cursor t)                              ; Stretch cursor to the glyph width
-
-(setq undo-limit 80000000                         ; Raise undo-limit to 80Mb
-      evil-want-fine-undo t                       ; By default while in insert all changes are one big blob. Be more granular
-      auto-save-default t                         ; Nobody likes to loose work, I certainly don't
-      truncate-string-ellipsis "…"                ; Unicode ellispis are nicer than "...", and also save /precious/ space
-      password-cache-expiry nil                   ; I can trust my computers ... can't I?
-      scroll-preserve-screen-position 'always     ; Don't have `point' jump around
-      scroll-margin 2                            ; It's nice to maintain a little margin
-)
-
-(display-time-mode 1)                             ; Enable time in the mode-line
-
-(unless (string-match-p "^Power N/A" (battery))   ; On laptops...
-  (display-battery-mode 1))                       ; it's nice to know how much power you have
-
-(global-subword-mode 1)                           ; Iterate through CamelCase words
 (setq display-line-numbers-type t)
-;; Start maximised (cross-platf)
-(add-hook 'window-setup-hook 'toggle-frame-maximized t)
 (ace-link-setup-default)
 (setq confirm-kill-processes nil)
 #+end_src

@@ -398,7 +398,6 @@
   (setq org-startup-folded t
 )
   (use-package org-superstar  ;; Improved version of org-bullets
-  	:ensure t
   	:config
   (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
   (setq org-directory "~/Org/"
@@ -486,90 +485,6 @@
         :n "D"   #'deft-archive-file
         :n "q"   #'kill-this-buffer-volatile)
 
-;; (defvar phrase-api-url
-;;   (nth (random 3)
-;;        '(("https://corporatebs-generator.sameerkumar.website/" :phrase)
-;;          ("https://useless-facts.sameerkumar.website/api" :data)
-;;          ("https://dev-excuses-api.herokuapp.com/" :text))))
-
-;; (defmacro phrase-generate-callback (token &optional format-fn ignore-read-only callback buffer-name)
-;;   `(lambda (status)
-;;      (unless (plist-get status :error)
-;;        (goto-char url-http-end-of-headers)
-;;        (let ((phrase (plist-get (json-parse-buffer :object-type 'plist) (cadr phrase-api-url)))
-;;              (inhibit-read-only ,(when (eval ignore-read-only) t)))
-;;          (setq phrase-last (cons phrase (float-time)))
-;;          (with-current-buffer ,(or (eval buffer-name) (buffer-name (current-buffer)))
-;;            (save-excursion
-;;              (goto-char (point-min))
-;;              (when (search-forward ,token nil t)
-;;                (with-silent-modifications
-;;                  (replace-match "")
-;;                  (insert ,(if format-fn format-fn 'phrase)))))
-;;            ,callback)))))
-
-;; (defvar phrase-last nil)
-;; (defvar phrase-timeout 5)
-
-;; (defmacro phrase-insert-async (&optional format-fn token ignore-read-only callback buffer-name)
-;;   `(let ((inhibit-message t))
-;;      (if (and phrase-last
-;;               (> phrase-timeout (- (float-time) (cdr phrase-last))))
-;;          (let ((phrase (car phrase-last)))
-;;            ,(if format-fn format-fn 'phrase))
-;;        (url-retrieve (car phrase-api-url)
-;;                      (phrase-generate-callback ,(or token "\ufeff") ,format-fn ,ignore-read-only ,callback ,buffer-name))
-;;        ;; For reference, \ufeff = Zero-width no-break space / BOM
-;;        ,(or token "\ufeff"))))
-
-;; (defun doom-dashboard-phrase ()
-;;   (phrase-insert-async
-;;    (progn
-;;      (setq-local phrase-position (point))
-;;      (mapconcat
-;;       (lambda (line)
-;;         (+doom-dashboard--center
-;;          +doom-dashboard--width
-;;          (with-temp-buffer
-;;            (insert-text-button
-;;             line
-;;             'action
-;;             (lambda (_)
-;;               (setq phrase-last nil)
-;;               (+doom-dashboard-reload t))
-;;             'face 'doom-dashboard-menu-title
-;;             'mouse-face 'doom-dashboard-menu-title
-;;             'help-echo "Random phrase"
-;;             'follow-link t)
-;;            (buffer-string))))
-;;       (split-string
-;;        (with-temp-buffer
-;;          (insert phrase)
-;;          (setq fill-column (min 70 (/ (* 2 (window-width)) 3)))
-;;          (fill-region (point-min) (point-max))
-;;          (buffer-string))
-;;        "\n")
-;;       "\n"))
-;;    nil t
-;;    (progn
-;;      (goto-char phrase-position)
-;;      (forward-whitespace 1))
-;;    +doom-dashboard-name))
-
-;; (defadvice! doom-dashboard-widget-loaded-with-phrase ()
-;;   :override #'doom-dashboard-widget-loaded
-;;   (setq line-spacing 0.2)
-;;   (insert
-;;    "\n\n"
-;;    (propertize
-;;     (+doom-dashboard--center
-;;      +doom-dashboard--width
-;;      (doom-display-benchmark-h 'return))
-;;     'face 'doom-dashboard-loaded)
-;;    "\n"
-;;    (doom-dashboard-phrase)
-;;    "\n"))
-
 (map! :leader
       (:prefix ("r" . "registers")
        :desc "Copy to register" "c" #'copy-to-register
@@ -593,17 +508,6 @@
        :desc "Spotify play/pause track" "x" #'counsel-spotify-toggle-play-pause
        :desc "Spotify play previous track" "p" #'counsel-spotify-previous
        :desc "Spotify play next track" "n" #'counsel-spotify-next))
-
-;;(use-package eaf
-;;  :load-path "~/.emacs.d/.local/straight/repos/eaf"
-;;  :custom
-;;  (eaf-browser-continue-where-left-off t)
-;;  :config
-;;  (setq eaf-browser-enable-adblocker t)
-;;  (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
-;;  (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
-;;  (eaf-bind-key take_photo "p" eaf-camera-keybinding)
-;;  (eaf-bind-key nil "M-q" eaf-browser-keybinding)) ;; unbind, see more in the Wiki
 
 (use-package! visual-fill-column)
 
