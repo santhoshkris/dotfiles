@@ -153,6 +153,7 @@
        (org
         +pretty
         +journal
+	+roam
         +dragndrop
         +org-bullets
 	+present)          ; organize your plain life in plain text
