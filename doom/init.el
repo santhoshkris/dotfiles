@@ -187,6 +187,7 @@
 
        :app
        ;;calendar
+       eaf
        emms
        simple-httpd
        org2blog

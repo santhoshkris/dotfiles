@@ -60,4 +60,5 @@
 (package! emojify)
 (package! ivy-posframe)
 (package! visual-fill-column)
+(package! eaf)
 

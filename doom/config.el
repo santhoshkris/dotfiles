@@ -101,7 +101,23 @@
   (kbd "J") 'elfeed-goodies/split-show-next
   (kbd "K") 'elfeed-goodies/split-show-prev)
 (setq elfeed-db-directory (expand-file-name "elfeed" user-emacs-directory))
+;;Org file config for feeds - Doesn't work on Termux, no sure why!
 (setq rmh-elfeed-org-files (list "~/Org/elfeed/elfeed.org"))
+;; (setq elfeed-feeds (quote (
+;;                      ("https://www.reddit.com/r/emacs.rss" reddit emacs)
+;;                      ("https://sachachua.com/blog/category/emacs/feed" sachachua emacs)
+;;                      ("http://feeds.bbci.co.uk/news/world/rss.xml" news world bbc)
+;;                      ("https://www.aljazeera.com/xml/rss/all.xml" news world aljazeera)
+;;                      ("https://www.dnaindia.com/feeds/india.xml" news india dna)
+;;                      ("https://indianexpress.com/feed/" news india indianexpress)
+;;                      ("https://timesofindia.indiatimes.com/rssfeedstopstories.cms" news india timesofindia)
+;;                      ("http://feeds.bbci.co.uk/news/technology/rss.xml" news tech bbc)
+;;                      ("https://www.wired.com/feed/rss" news tech wired)
+;;                      ("https://www.technologyreview.com/feed/" news tech mit)
+;;                      ("https://www.sciencedaily.com/rss/top/science.xml" nature sciencedaily)
+;;                      ("https://www.sciencedaily.com/rss/top.xml" nature topscience)
+;;                      ("https://www.jetpens.com/blog/feed" stationery jetpens)
+;;                     )))
 
 (map! :map elfeed-search-mode-map
       :after elfeed-search
@@ -265,6 +281,34 @@
        :desc "Evaluate elisp expression" "e" #'eval-expression
        :desc "Evaluate last sexpression" "l" #'eval-last-sexp
        :desc "Evaluate elisp in region" "r" #'eval-region))
+
+(add-to-list 'load-path "~/.emacs.d/.local/straight/repos/eaf/")
+(require 'eaf)
+(require 'eaf-browser)
+(require 'eaf-pdf-viewer)
+
+(use-package eaf
+  :custom
+  (eaf-browser-continue-where-left-off t)
+  :config
+  (setq eaf-browser-enable-adblocker t)
+  (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key nil "M-q" eaf-browser-keybinding))
+
+  (require 'eaf-evil)
+
+(define-key key-translation-map (kbd "SPC")
+    (lambda (prompt)
+      (if (derived-mode-p 'eaf-mode)
+          (pcase eaf--buffer-app-name
+            ("browser" (if  (string= (eaf-call-sync "call_function" eaf--buffer-id "is_focus") "True")
+                           (kbd "SPC")
+                         (kbd eaf-evil-leader-key)))
+            ("pdf-viewer" (kbd eaf-evil-leader-key))
+            ("image-viewer" (kbd eaf-evil-leader-key))
+            (_  (kbd "SPC")))
+        (kbd "SPC"))))
 
 (evil-define-minor-mode-key '(normal motion) 'evil-snipe-local-mode
   "s" #'avy-goto-char
@@ -550,6 +594,17 @@
        :desc "Spotify play/pause track" "x" #'counsel-spotify-toggle-play-pause
        :desc "Spotify play previous track" "p" #'counsel-spotify-previous
        :desc "Spotify play next track" "n" #'counsel-spotify-next))
+
+;;(use-package eaf
+;;  :load-path "~/.emacs.d/.local/straight/repos/eaf"
+;;  :custom
+;;  (eaf-browser-continue-where-left-off t)
+;;  :config
+;;  (setq eaf-browser-enable-adblocker t)
+;;  (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
+;;  (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
+;;  (eaf-bind-key take_photo "p" eaf-camera-keybinding)
+;;  (eaf-bind-key nil "M-q" eaf-browser-keybinding)) ;; unbind, see more in the Wiki
 
 (use-package! visual-fill-column)
 
