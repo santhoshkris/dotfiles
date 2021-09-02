@@ -545,9 +545,15 @@
 
 (global-subword-mode 1)                           ; Iterate through CamelCase words
 (setq display-line-numbers-type t)
+
+(map! :leader
+      (:prefix ("t" . "Yoda - Global Zen Mode")
+       :desc "Yoda - Global Zen Mode" "y" #'global-writeroom-mode
+       ))
 ;; Start maximised (cross-platf)
 ;; (add-hook 'window-setup-hook 'toggle-frame-maximized t)
 ;; Start fullscreen (cross-platf)
 (add-hook 'window-setup-hook 'toggle-frame-fullscreen t)
+(global-writeroom-mode 1)
 (ace-link-setup-default)
 (setq confirm-kill-processes nil)

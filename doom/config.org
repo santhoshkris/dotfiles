@@ -735,10 +735,19 @@ All the other miscellaneous stuf that makes things a bit easier
 
 (global-subword-mode 1)                           ; Iterate through CamelCase words
 (setq display-line-numbers-type t)
+(ace-link-setup-default)
+
 ;; Start maximised (cross-platf)
 ;; (add-hook 'window-setup-hook 'toggle-frame-maximized t)
 ;; Start fullscreen (cross-platf)
 (add-hook 'window-setup-hook 'toggle-frame-fullscreen t)
-(ace-link-setup-default)
+
+(map! :leader
+      (:prefix ("t" . "Yoda - Global Zen Mode")
+       :desc "Yoda - Global Zen Mode" "y" #'global-writeroom-mode
+       ))
+(global-writeroom-mode 1)
+
 (setq confirm-kill-processes nil)
+
 #+end_src
