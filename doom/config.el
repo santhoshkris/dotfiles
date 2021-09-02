@@ -546,6 +546,8 @@
 (global-subword-mode 1)                           ; Iterate through CamelCase words
 (setq display-line-numbers-type t)
 ;; Start maximised (cross-platf)
-(add-hook 'window-setup-hook 'toggle-frame-maximized t)
+;; (add-hook 'window-setup-hook 'toggle-frame-maximized t)
+;; Start fullscreen (cross-platf)
+(add-hook 'window-setup-hook 'toggle-frame-fullscreen t)
 (ace-link-setup-default)
 (setq confirm-kill-processes nil)
