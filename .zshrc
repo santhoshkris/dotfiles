@@ -4,6 +4,8 @@
 # Path to your oh-my-zsh installation.
 export ZSH="/Users/santhosh.k/.oh-my-zsh"
 export PATH=/usr/local/bin:$PATH:/usr/local/mysql/bin:/Applications/Postgres.app/Contents/Versions/13/bin/
+export PATH="/usr/local/opt/php@7.4/bin:$PATH"
+export PATH="/usr/local/opt/php@7.4/sbin:$PATH"
 export GOPATH=~/go/lib
 
 # Set name of the theme to load --- if set to "random", it will
