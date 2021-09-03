@@ -1,3 +1,5 @@
+(setq platform "MAC")
+
 (defun org2blog-init-login()
   (interactive)
   (org2blog/wp-login))
@@ -281,6 +283,7 @@
        :desc "Evaluate last sexpression" "l" #'eval-last-sexp
        :desc "Evaluate elisp in region" "r" #'eval-region))
 
+(when (not (string= platform "TERMUX"))
 (add-to-list 'load-path "~/.emacs.d/.local/straight/repos/eaf/")
 (require 'eaf)
 (require 'eaf-browser)
@@ -308,6 +311,7 @@
             ("image-viewer" (kbd eaf-evil-leader-key))
             (_  (kbd "SPC")))
         (kbd "SPC"))))
+)
 
 (evil-define-minor-mode-key '(normal motion) 'evil-snipe-local-mode
   "s" #'avy-goto-char
@@ -551,12 +555,50 @@
 ;;      '(("d" "default" entry "* %<%I:%M %p>: %?"
 ;;         :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
 
+(defun my-deft/strip-quotes (str)
+  (cond ((string-match "\"\\(.+\\)\"" str) (match-string 1 str))
+        ((string-match "'\\(.+\\)'" str) (match-string 1 str))
+        (t str)))
+
+(defun my-deft/parse-title-from-front-matter-data (str)
+  (if (string-match "^title: \\(.+\\)" str)
+      (let* ((title-text (my-deft/strip-quotes (match-string 1 str)))
+             (is-draft (string-match "^draft: true" str)))
+        (concat (if is-draft "[DRAFT] " "") title-text))))
+
+(defun my-deft/deft-file-relative-directory (filename)
+  (file-name-directory (file-relative-name filename deft-directory)))
+
+(defun my-deft/title-prefix-from-file-name (filename)
+  (let ((reldir (my-deft/deft-file-relative-directory filename)))
+    (if reldir
+        (concat (directory-file-name reldir) " > "))))
+
+(defun my-deft/parse-title-with-directory-prepended (orig &rest args)
+  (let ((str (nth 1 args))
+        (filename (car args)))
+    (concat
+      (my-deft/title-prefix-from-file-name filename)
+      (let ((nondir (file-name-nondirectory filename)))
+        (if (or (string-prefix-p "README" nondir)
+                (string-suffix-p ".txt" filename))
+            nondir
+          (if (string-prefix-p "---\n" str)
+              (my-deft/parse-title-from-front-matter-data
+               (car (split-string (substring str 4) "\n---\n")))
+            (apply orig args)))))))
+
 (after! deft 
 (setq deft-directory "~/org"
       deft-extensions '("org" "txt")
       deft-recursive t
       deft-strip-summary-regexp ":PROPERTIES:\n\\(.+\n\\)+:END:\n"
-      deft-use-filename-as-title t))
+      deft-use-filename-as-title nil
+      deft-use-filter-string-for-filename t
+      deft-file-naming-rules '((nospace . "-"))
+)
+(advice-add 'deft-parse-title :around #'my-deft/parse-title-with-directory-prepended)
+)
 
 (defun kill-this-buffer-volatile ()
     "Kill current buffer, even if it has been modified."
@@ -591,6 +633,7 @@
        :desc "Increment register" "+" #'increment-register
        :desc "Point to register" "SPC" #'point-to-register))
 
+(when (not (string= platform "TERMUX"))
 ;;Control Spotify from within Emacs!
 (setq counsel-spotify-client-id "7176a0f349d14df18735d93b09d46e60")
 (setq counsel-spotify-client-secret "f7cd08f3ad784e76a268a3261f73e585")
@@ -600,6 +643,7 @@
        :desc "Spotify play/pause track" "x" #'counsel-spotify-toggle-play-pause
        :desc "Spotify play previous track" "p" #'counsel-spotify-previous
        :desc "Spotify play next track" "n" #'counsel-spotify-next))
+)
 
 (use-package! visual-fill-column)
 
@@ -615,6 +659,7 @@
    '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
    ))
 
+(when (not (string= platform "TERMUX"))
 (setq-default
  delete-by-moving-to-trash t                      ; Delete files to trash
  window-combination-resize t                      ; take new window space from all other windows (not just current)
@@ -642,11 +687,11 @@
 ;; (add-hook 'window-setup-hook 'toggle-frame-maximized t)
 ;; Start fullscreen (cross-platf)
 (add-hook 'window-setup-hook 'toggle-frame-fullscreen t)
-
+(global-writeroom-mode 1)
+)
 (map! :leader
       (:prefix ("t" . "Yoda - Global Zen Mode")
        :desc "Yoda - Global Zen Mode" "y" #'global-writeroom-mode
        ))
-(global-writeroom-mode 1)
 
 (setq confirm-kill-processes nil)
