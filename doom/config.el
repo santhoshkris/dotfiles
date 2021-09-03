@@ -358,6 +358,36 @@
        :desc "Ivy push view" "v p" #'ivy-push-view
        :desc "Ivy switch view" "v s" #'ivy-switch-view))
 
+(use-package ledger-mode
+  :mode ("\\.dat\\'"
+         "\\.ledger\\'")
+  :bind (:map ledger-mode-map
+              ("C-x C-s" . my/ledger-save))
+  :hook (ledger-mode . ledger-flymake-enable)
+  :preface
+  (defun my/ledger-save ()
+    "Automatically clean the ledger buffer at each save."
+    (interactive)
+    (ledger-mode-clean-buffer)
+    (save-buffer))
+  :custom
+  (ledger-clear-whole-transactions t)
+  (ledger-reconcile-default-commodity "INR")
+  (add-to-list 'evil-emacs-state-modes 'ledger-report-mode)
+  (ledger-reports
+   '(("account statement" "%(binary) reg --real [[ledger-mode-flags]] -f %(ledger-file) ^%(account)")
+     ("balance sheet" "%(binary) --real [[ledger-mode-flags]] -f %(ledger-file) bal ^assets ^liabilities ^equity")
+     ("budget" "%(binary) --empty -S -T [[ledger-mode-flags]] -f %(ledger-file) bal ^assets:bank ^assets:receivables ^assets:cash ^assets:budget")
+     ("budget goals" "%(binary) --empty -S -T [[ledger-mode-flags]] -f %(ledger-file) bal ^assets:bank ^assets:receivables ^assets:cash ^assets:'budget goals'")
+     ("budget obligations" "%(binary) --empty -S -T [[ledger-mode-flags]] -f %(ledger-file) bal ^assets:bank ^assets:receivables ^assets:cash ^assets:'budget obligations'")
+     ("budget debts" "%(binary) --empty -S -T [[ledger-mode-flags]] -f %(ledger-file) bal ^assets:bank ^assets:receivables ^assets:cash ^assets:'budget debts'")
+     ("cleared" "%(binary) cleared [[ledger-mode-flags]] -f %(ledger-file)")
+     ("equity" "%(binary) --real [[ledger-mode-flags]] -f %(ledger-file) equity")
+     ("income statement" "%(binary) --invert --real -S -T [[ledger-mode-flags]] -f %(ledger-file) bal ^income ^expenses -p \"this month\""))
+   (ledger-report-use-header-line nil)))
+
+(use-package flycheck-ledger :after ledger-mode)
+
 (setq display-line-numbers-type t)
 (map! :leader
       :desc "Comment or uncomment lines" "TAB TAB" #'comment-line
@@ -431,24 +461,85 @@
              "CANCELLED(c)" )))) ; Task has been cancelled
 
 (after! org
-	(setq org-agenda-files '("~/org/gtd/inbox.org"
+        (setq org-agenda-files '("~/org/gtd/inbox.org"
                          "~/org/gtd/gtd.org"
                          "~/org/gtd/tickler.org"))
 
-	(setq org-capture-templates '(("t" "Todo [inbox]" entry
-                               (file+headline "~/org/gtd/inbox.org" "Tasks")
-                               "* TODO %i%?")
-                              ("T" "Tickler" entry
-                               (file+headline "~/org/gtd/tickler.org" "Tickler")
-                               "* %i%? \n %U")))
+(use-package org-capture
+  :ensure nil
+  :preface
+  ;;(defvar my/org-basic-task-template "* TODO %^{Task}
+  ;;	:PROPERTIES:
+  ;;	:Effort: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+  ;;	:END:
+  ;;	Captured %<%Y-%m-%d %H:%M>" "Template for basic task.")
+
+  (defvar my/org-ledger-income-template "%(org-read-date) %^{Payee}
+  Income:%^{Account}  %^{Amount}
+  Assets:Bank:Checking" "Template for income with ledger.")
+
+  (defvar my/org-ledger-card-template "%(org-read-date) %^{Payee}
+  Expenses:%^{Account}  %^{Amount}
+  Liabilities:CreditCards:Manhattan" "Template for credit card transaction with ledger.")
+
+  (defvar my/org-ledger-cash-template "%(org-read-date) * %^{Payee}
+  Expenses:%^{Account}  Rs%^{Amount}
+  Assets:Bank:Checking" "Template for cash transaction with ledger.")
+
+  :custom
+  (org-capture-templates
+   `(
+     ("B" "Book" checkitem (file+headline "~/org/other/books.org" "Books")
+      "- [ ] %^{Book}"
+      :immediate-finish t)
+
+     ("L" "Learning" checkitem (file+headline "~/org/other/learning.org" "Things")
+      "- [ ] %^{Thing}"
+      :immediate-finish t)
+
+     ("M" "Movie" checkitem (file+headline "~/org/other/movies.org" "Movies")
+      "- [ ] %^{Movie}"
+      :immediate-finish t)
+
+     ("P" "Purchase" checkitem (file+headline "~/org/other/purchases.org" "Purchases")
+      "- [ ] %^{Item}"
+      :immediate-finish t)
+
+     ("l" "Ledger")
+
+     ("li" "Income" plain (file ,(format "~/org/ledger/ledger-%s.dat" (format-time-string "%Y"))),
+      my/org-ledger-income-template
+      :empty-lines 1
+      :immediate-finish t)
+
+     ("lc" "Credit Card" plain (file ,(format "~/org/ledger/ledger-%s.dat" (format-time-string "%Y"))),
+      my/org-ledger-card-template
+      :empty-lines 1
+      :immediate-finish t)
+
+     ("ld" "Debit from Bank" plain (file ,(format "~/org/ledger/ledger-%s.dat" (format-time-string "%Y"))),
+      my/org-ledger-cash-template
+      :empty-lines 1
+      :immediate-finish t)
+
+      ("t" "Todo [inbox]" entry (file+headline "~/org/gtd/inbox.org" "Tasks")
+       "* TODO %i%?")
+
+      ("T" "Tickler" entry (file+headline "~/org/gtd/tickler.org" "Tickler")
+       "* %i%? \n %U")
+
+   ;;  ("t" "Task" entry (file+headline "~/org/agenda/organizer.org" "Tasks"),
+   ;;   my/org-basic-task-template
+   ;;   :empty-lines 1)
+	)))
 
 	(setq org-refile-targets '(("~/org/gtd/gtd.org" :maxlevel . 3)
                            ("~/org/gtd/someday.org" :level . 1)
                            ("~/org/gtd/tickler.org" :maxlevel . 2)))
 
-	(setq org-agenda-custom-commands
-      		'(("o" "At the office" tags-todo "@office"
-         	((org-agenda-overriding-header "Office"))))))
+        (setq org-agenda-custom-commands
+                '(("o" "At the office" tags-todo "@office"
+                ((org-agenda-overriding-header "Office"))))))
 
 (after! org-roam
 (setq org-roam-directory "~/org/roam")
