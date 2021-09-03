@@ -475,15 +475,15 @@
   ;;	Captured %<%Y-%m-%d %H:%M>" "Template for basic task.")
 
   (defvar my/org-ledger-income-template "%(org-read-date) %^{Payee}
-  Income:%^{Account}  %^{Amount}
+  Income:%^{Account}  ₹%^{Amount}
   Assets:Bank:Checking" "Template for income with ledger.")
 
   (defvar my/org-ledger-card-template "%(org-read-date) %^{Payee}
-  Expenses:%^{Account}  %^{Amount}
+  Expenses:%^{Account}    ₹%^{Amount}
   Liabilities:CreditCards:Manhattan" "Template for credit card transaction with ledger.")
 
   (defvar my/org-ledger-cash-template "%(org-read-date) * %^{Payee}
-  Expenses:%^{Account}  Rs%^{Amount}
+  Expenses:%^{Account}  ₹%^{Amount}
   Assets:Bank:Checking" "Template for cash transaction with ledger.")
 
   :custom
