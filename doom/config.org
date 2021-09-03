@@ -5,6 +5,7 @@
 
 * TABLE OF CONTENTS :toc:
 - [[#about-this-config-file][ABOUT THIS CONFIG FILE]]
+- [[#platform][PLATFORM]]
 - [[#blogging][BLOGGING]]
 - [[#calendar][CALENDAR]]
 - [[#doom-theme][DOOM Theme]]
@@ -31,12 +32,16 @@
 
 * ABOUT THIS CONFIG FILE
 My personal Doom Emacs config. Doom Emacs is a distribution of Emacs that uses the "evil" keybindings (Vim keybindings) and includes a number of nice extensions and a bit of configuration out of the box.
+* PLATFORM
+#+begin_src emacs-lisp
 
+(setq platform "MAC")
+
+#+end_src
 * BLOGGING
 Creating content for blog from within EMACS, using the amazing OrgMode
 
 #+begin_src emacs-lisp
-(setq platform "MAC")
 
 (defun org2blog-init-login()
   (interactive)
