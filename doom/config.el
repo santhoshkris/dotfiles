@@ -90,6 +90,20 @@
 (add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1))
 (setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
 
+;; Thanks, but no thanks
+(setq inhibit-startup-message t)
+
+(when (not (string= platform "TERMUX"))
+  (scroll-bar-mode -1)        ; Disable visible scrollbar
+  (tool-bar-mode -1)          ; Disable the toolbar
+  (tooltip-mode -1)           ; Disable tooltips
+  (set-fringe-mode 10))       ; Give some breathing room
+
+(menu-bar-mode -1)            ; Disable the menu bar
+
+;; Set up the visible bell
+(setq visible-bell t)
+
 (use-package emojify
   :hook (after-init . global-emojify-mode))
 
