@@ -1,92 +1,10 @@
 (setq platform "MAC")
 
-(defun org2blog-init-login()
-  (interactive)
-  (org2blog/wp-login))
-
-(defun org2blog-init-ui()
-  (interactive)
-  ;;(org2blog/wp-login)
-  (org2blog-user-interface))
-
-(setq org2blog/wp-blog-alist
-      '(("framesofnature"
-         :url "https://framesofnature.com/xmlrpc.php"
-         :username "santh0sh"
-         :password "v3ue2wux")))
-(map! :leader
-      (:prefix ("j" . "Journaling & Blogging")
-       :desc "Login to your Blog" "l" #'org2blog-init-login
-       :desc "Start Blogging" "b" #'org2blog-init-ui))
-
-;; https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-than-3-months
-(defun dt/year-calendar (&optional year)
-  (interactive)
-  (require 'calendar)
-  (let* (
-      (current-year (number-to-string (nth 5 (decode-time (current-time)))))
-      (month 0)
-      (year (if year year (string-to-number (format-time-string "%Y" (current-time))))))
-    (switch-to-buffer (get-buffer-create calendar-buffer))
-    (when (not (eq major-mode 'calendar-mode))
-      (calendar-mode))
-    (setq displayed-month month)
-    (setq displayed-year year)
-    (setq buffer-read-only nil)
-    (erase-buffer)
-    ;; horizontal rows
-    (dotimes (j 4)
-      ;; vertical columns
-      (dotimes (i 3)
-        (calendar-generate-month
-          (setq month (+ month 1))
-          year
-          ;; indentation / spacing between months
-          (+ 5 (* 25 i))))
-      (goto-char (point-max))
-      (insert (make-string (- 10 (count-lines (point-min) (point-max))) ?\n))
-      (widen)
-      (goto-char (point-max))
-      (narrow-to-region (point-max) (point-max)))
-    (widen)
-    (goto-char (point-min))
-    (setq buffer-read-only t)))
-
-(defun dt/scroll-year-calendar-forward (&optional arg event)
-  "Scroll the yearly calendar by year in a forward direction."
-  (interactive (list (prefix-numeric-value current-prefix-arg)
-                     last-nonmenu-event))
-  (unless arg (setq arg 0))
-  (save-selected-window
-    (if (setq event (event-start event)) (select-window (posn-window event)))
-    (unless (zerop arg)
-      (let* (
-              (year (+ displayed-year arg)))
-        (dt/year-calendar year)))
-    (goto-char (point-min))
-    (run-hooks 'calendar-move-hook)))
-
-(defun dt/scroll-year-calendar-backward (&optional arg event)
-  "Scroll the yearly calendar by year in a backward direction."
-  (interactive (list (prefix-numeric-value current-prefix-arg)
-                     last-nonmenu-event))
-  (dt/scroll-year-calendar-forward (- (or arg 1)) event))
-
-(map! :leader
-      :desc "Scroll year calendar backward" "<left>" #'dt/scroll-year-calendar-backward
-      :desc "Scroll year calendar forward" "<right>" #'dt/scroll-year-calendar-forward)
-
-(defalias 'year-calendar 'dt/year-calendar)
-
-(use-package! calfw)
-(use-package! calfw-org)
-
 ;;(setq doom-theme 'doom-gruvbox)
 (setq doom-theme 'doom-dracula)
 (map! :leader
       :desc "Load new theme" "h t" #'load-theme)
 
-;;(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1))
 (setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
 
@@ -97,236 +15,11 @@
   (scroll-bar-mode -1)        ; Disable visible scrollbar
   (tool-bar-mode -1)          ; Disable the toolbar
   (tooltip-mode -1)           ; Disable tooltips
-  (set-fringe-mode 10))       ; Give some breathing room
-
-(menu-bar-mode -1)            ; Disable the menu bar
+  (set-fringe-mode 10)        ; Give some breathing room
+  (menu-bar-mode -1))         ; Disable the menu bar
 
 ;; Set up the visible bell
 (setq visible-bell t)
-
-(use-package emojify
-  :hook (after-init . global-emojify-mode))
-
-(use-package! elfeed-goodies)
-(elfeed-goodies/setup)
-(setq elfeed-goodies/entry-pane-size 0.5)
-(add-hook 'elfeed-show-mode-hook 'visual-line-mode)
-(evil-define-key 'normal elfeed-show-mode-map
-  (kbd "J") 'elfeed-goodies/split-show-next
-  (kbd "K") 'elfeed-goodies/split-show-prev)
-(evil-define-key 'normal elfeed-search-mode-map
-  (kbd "J") 'elfeed-goodies/split-show-next
-  (kbd "K") 'elfeed-goodies/split-show-prev)
-(setq elfeed-db-directory (expand-file-name "elfeed" user-emacs-directory))
-(setq rmh-elfeed-org-files (list "~/org/elfeed.org"))
-;; (setq elfeed-feeds (quote (
-;;                      ("https://www.reddit.com/r/emacs.rss" reddit emacs)
-;;                      ("https://sachachua.com/blog/category/emacs/feed" sachachua emacs)
-;;                      ("http://feeds.bbci.co.uk/news/world/rss.xml" news world bbc)
-;;                      ("https://www.aljazeera.com/xml/rss/all.xml" news world aljazeera)
-;;                      ("https://www.dnaindia.com/feeds/india.xml" news india dna)
-;;                      ("https://indianexpress.com/feed/" news india indianexpress)
-;;                      ("https://timesofindia.indiatimes.com/rssfeedstopstories.cms" news india timesofindia)
-;;                      ("http://feeds.bbci.co.uk/news/technology/rss.xml" news tech bbc)
-;;                      ("https://www.wired.com/feed/rss" news tech wired)
-;;                      ("https://www.technologyreview.com/feed/" news tech mit)
-;;                      ("https://www.sciencedaily.com/rss/top/science.xml" nature sciencedaily)
-;;                      ("https://www.sciencedaily.com/rss/top.xml" nature topscience)
-;;                      ("https://www.jetpens.com/blog/feed" stationery jetpens)
-;;                     )))
-
-(map! :map elfeed-search-mode-map
-      :after elfeed-search
-      [remap kill-this-buffer] "q"
-      [remap kill-buffer] "q"
-      :n doom-leader-key nil
-      ;; :n "q" #'+rss/quit
-      :n "e" #'elfeed-update
-      :n "r" #'elfeed-search-untag-all-unread
-      :n "u" #'elfeed-search-tag-all-unread
-      :n "s" #'elfeed-search-live-filter
-      :n "RET" #'elfeed-search-show-entry
-      :n "p" #'elfeed-show-pdf
-      :n "+" #'elfeed-search-tag-all
-      :n "-" #'elfeed-search-untag-all
-      :n "S" #'elfeed-search-set-filter
-      :n "b" #'elfeed-search-browse-url
-      :n "y" #'elfeed-search-yank)
-
-(map! :map elfeed-show-mode-map
-      :after elfeed-show
-      [remap kill-this-buffer] "q"
-      [remap kill-buffer] "q"
-      :n doom-leader-key nil
-      :nm "q" #'+rss/delete-pane
-      :nm "o" #'ace-link-elfeed
-      :nm "RET" #'org-ref-elfeed-add
-      :nm "n" #'elfeed-show-next
-      :nm "N" #'elfeed-show-prev
-      :nm "p" #'elfeed-show-pdf
-      :nm "+" #'elfeed-show-tag
-      :nm "-" #'elfeed-show-untag
-      :nm "s" #'elfeed-show-new-live-search
-      :nm "y" #'elfeed-show-yank)
-
-(after! elfeed-search
-  (set-evil-initial-state! 'elfeed-search-mode 'normal))
-(after! elfeed-show-mode
-  (set-evil-initial-state! 'elfeed-show-mode   'normal))
-
-(after! evil-snipe
-  (push 'elfeed-show-mode   evil-snipe-disabled-modes)
-  (push 'elfeed-search-mode evil-snipe-disabled-modes))
-
-(after! elfeed
-
-  ;; (elfeed-org)
-  (use-package! elfeed-link)
-
-  (setq elfeed-search-filter "@4-week-ago +unread"
-        elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
-        elfeed-search-title-min-width 80
-        elfeed-show-entry-switch #'pop-to-buffer
-        elfeed-show-entry-delete #'+rss/delete-pane
-        elfeed-show-refresh-function #'+rss/elfeed-show-refresh--better-style
-        shr-max-image-proportion 0.6)
-
-  (add-hook! 'elfeed-show-mode-hook (hide-mode-line-mode 1))
-  (add-hook! 'elfeed-search-update-hook #'hide-mode-line-mode)
-
-  (defface elfeed-show-title-face '((t (:weight ultrabold :slant italic :height 1.5)))
-    "title face in elfeed show buffer"
-    :group 'elfeed)
-  (defface elfeed-show-author-face `((t (:weight light)))
-    "title face in elfeed show buffer"
-    :group 'elfeed)
-  (set-face-attribute 'elfeed-search-title-face nil
-                      :foreground 'nil
-                      :weight 'light)
-
-  (defadvice! +rss-elfeed-wrap-h-nicer ()
-    "Enhances an elfeed entry's readability by wrapping it to a width of `fill-column' and centering it with `visual-fill-column-mode'."
-    :override #'+rss-elfeed-wrap-h
-    (setq-local truncate-lines nil
-                shr-width 120
-                visual-fill-column-center-text t
-                default-text-properties '(line-height 1.1))
-    (let ((inhibit-read-only t)
-          (inhibit-modification-hooks t))
-      (visual-fill-column-mode)
-      ;; (setq-local shr-current-font '(:family "Merriweather" :height 1.2))
-      (set-buffer-modified-p nil)))
-
-  (defun +rss/elfeed-search-print-entry (entry)
-    "Print ENTRY to the buffer."
-    (let* ((elfeed-goodies/tag-column-width 40)
-           (elfeed-goodies/feed-source-column-width 30)
-           (title (or (elfeed-meta entry :title) (elfeed-entry-title entry) ""))
-           (title-faces (elfeed-search--faces (elfeed-entry-tags entry)))
-           (feed (elfeed-entry-feed entry))
-           (feed-title
-            (when feed
-              (or (elfeed-meta feed :title) (elfeed-feed-title feed))))
-           (tags (mapcar #'symbol-name (elfeed-entry-tags entry)))
-           (tags-str (concat (mapconcat 'identity tags ",")))
-           (title-width (- (window-width) elfeed-goodies/feed-source-column-width
-                           elfeed-goodies/tag-column-width 4))
-
-           (tag-column (elfeed-format-column
-                        tags-str (elfeed-clamp (length tags-str)
-                                               elfeed-goodies/tag-column-width
-                                               elfeed-goodies/tag-column-width)
-                        :left))
-           (feed-column (elfeed-format-column
-                         feed-title (elfeed-clamp elfeed-goodies/feed-source-column-width
-                                                  elfeed-goodies/feed-source-column-width
-                                                  elfeed-goodies/feed-source-column-width)
-                         :left)))
-
-      (insert (propertize feed-column 'face 'elfeed-search-feed-face) " ")
-      (insert (propertize tag-column 'face 'elfeed-search-tag-face) " ")
-      (insert (propertize title 'face title-faces 'kbd-help title))
-      (setq-local line-spacing 0.2)))
-
-  (defun +rss/elfeed-show-refresh--better-style ()
-    "Update the buffer to match the selected entry, using a mail-style."
-    (interactive)
-    (let* ((inhibit-read-only t)
-           (title (elfeed-entry-title elfeed-show-entry))
-           (date (seconds-to-time (elfeed-entry-date elfeed-show-entry)))
-           (author (elfeed-meta elfeed-show-entry :author))
-           (link (elfeed-entry-link elfeed-show-entry))
-           (tags (elfeed-entry-tags elfeed-show-entry))
-           (tagsstr (mapconcat #'symbol-name tags ", "))
-           (nicedate (format-time-string "%a, %e %b %Y %T %Z" date))
-           (content (elfeed-deref (elfeed-entry-content elfeed-show-entry)))
-           (type (elfeed-entry-content-type elfeed-show-entry))
-           (feed (elfeed-entry-feed elfeed-show-entry))
-           (feed-title (elfeed-feed-title feed))
-           (base (and feed (elfeed-compute-base (elfeed-feed-url feed)))))
-      (erase-buffer)
-      (insert "\n")
-      (insert (format "%s\n\n" (propertize title 'face 'elfeed-show-title-face)))
-      (insert (format "%s\t" (propertize feed-title 'face 'elfeed-search-feed-face)))
-      (when (and author elfeed-show-entry-author)
-        (insert (format "%s\n" (propertize author 'face 'elfeed-show-author-face))))
-      (insert (format "%s\n\n" (propertize nicedate 'face 'elfeed-log-date-face)))
-      (when tags
-        (insert (format "%s\n"
-                        (propertize tagsstr 'face 'elfeed-search-tag-face))))
-      ;; (insert (propertize "Link: " 'face 'message-header-name))
-      ;; (elfeed-insert-link link link)
-      ;; (insert "\n")
-      (cl-loop for enclosure in (elfeed-entry-enclosures elfeed-show-entry)
-               do (insert (propertize "Enclosure: " 'face 'message-header-name))
-               do (elfeed-insert-link (car enclosure))
-               do (insert "\n"))
-      (insert "\n")
-      (if content
-          (if (eq type 'html)
-              (elfeed-insert-html content base)
-            (insert content))
-        (insert (propertize "(empty)\n" 'face 'italic)))
-      (goto-char (point-min))))
-  )
-
-(map! :leader
-      (:prefix ("e". "evaluate/EWW")
-       :desc "Evaluate elisp in buffer" "b" #'eval-buffer
-       :desc "Evaluate defun" "d" #'eval-defun
-       :desc "Evaluate elisp expression" "e" #'eval-expression
-       :desc "Evaluate last sexpression" "l" #'eval-last-sexp
-       :desc "Evaluate elisp in region" "r" #'eval-region))
-
-(when (not (string= platform "TERMUX"))
-(add-to-list 'load-path "~/.emacs.d/.local/straight/repos/eaf/")
-(require 'eaf)
-(require 'eaf-browser)
-(require 'eaf-pdf-viewer)
-
-(use-package eaf
-  :custom
-  (eaf-browser-continue-where-left-off t)
-  :config
-  (setq eaf-browser-enable-adblocker t)
-  (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key nil "M-q" eaf-browser-keybinding))
-
-  (require 'eaf-evil)
-
-(define-key key-translation-map (kbd "SPC")
-    (lambda (prompt)
-      (if (derived-mode-p 'eaf-mode)
-          (pcase eaf--buffer-app-name
-            ("browser" (if  (string= (eaf-call-sync "call_function" eaf--buffer-id "is_focus") "True")
-                           (kbd "SPC")
-                         (kbd eaf-evil-leader-key)))
-            ("pdf-viewer" (kbd eaf-evil-leader-key))
-            ("image-viewer" (kbd eaf-evil-leader-key))
-            (_  (kbd "SPC")))
-        (kbd "SPC"))))
-)
 
 (evil-define-minor-mode-key '(normal motion) 'evil-snipe-local-mode
   "s" #'avy-goto-char
@@ -382,37 +75,6 @@
        :desc "Ivy push view" "v p" #'ivy-push-view
        :desc "Ivy switch view" "v s" #'ivy-switch-view))
 
-(use-package ledger-mode
-  :mode ("\\.dat\\'"
-         "\\.ledger\\'")
-  :bind (:map ledger-mode-map
-              ("C-x C-s" . my/ledger-save))
-  :hook (ledger-mode . ledger-flymake-enable)
-  :preface
-  (defun my/ledger-save ()
-    "Automatically clean the ledger buffer at each save."
-    (interactive)
-    (ledger-mode-clean-buffer)
-    (save-buffer))
-  :custom
-  (ledger-clear-whole-transactions t)
-  (ledger-reconcile-default-commodity "INR")
-  (add-to-list 'evil-emacs-state-modes 'ledger-report-mode)
-  (ledger-reports
-   '(("account statement" "%(binary) reg --real [[ledger-mode-flags]] -f %(ledger-file) ^%(account)")
-     ("balance sheet" "%(binary) --real [[ledger-mode-flags]] -f %(ledger-file) bal ^assets ^liabilities ^equity")
-     ("budget" "%(binary) --empty -S -T [[ledger-mode-flags]] -f %(ledger-file) bal ^assets:bank ^assets:receivables ^assets:cash ^assets:budget")
-     ("budget goals" "%(binary) --empty -S -T [[ledger-mode-flags]] -f %(ledger-file) bal ^assets:bank ^assets:receivables ^assets:cash ^assets:'budget goals'")
-     ("budget obligations" "%(binary) --empty -S -T [[ledger-mode-flags]] -f %(ledger-file) bal ^assets:bank ^assets:receivables ^assets:cash ^assets:'budget obligations'")
-     ("budget debts" "%(binary) --empty -S -T [[ledger-mode-flags]] -f %(ledger-file) bal ^assets:bank ^assets:receivables ^assets:cash ^assets:'budget debts'")
-     ("cleared" "%(binary) cleared [[ledger-mode-flags]] -f %(ledger-file)")
-     ("equity" "%(binary) --real [[ledger-mode-flags]] -f %(ledger-file) equity")
-     ("income statement" "%(binary) --invert --real -S -T [[ledger-mode-flags]] -f %(ledger-file) bal ^income ^expenses -p \"this month\""))
-   (ledger-report-use-header-line nil)))
-
-(use-package flycheck-ledger :after ledger-mode)
-
-(setq display-line-numbers-type t)
 (map! :leader
       :desc "Comment or uncomment lines" "TAB TAB" #'comment-line
       (:prefix ("t" . "toggle")
@@ -420,6 +82,35 @@
        :desc "Toggle line highlight in frame" "h" #'hl-line-mode
        :desc "Toggle line highlight globally" "H" #'global-hl-line-mode
        :desc "Toggle truncate lines" "t" #'toggle-truncate-lines))
+
+(map! :leader
+      (:prefix ("e". "evaluate/EWW")
+       :desc "Evaluate elisp in buffer" "b" #'eval-buffer
+       :desc "Evaluate defun" "d" #'eval-defun
+       :desc "Evaluate elisp expression" "e" #'eval-expression
+       :desc "Evaluate last sexpression" "l" #'eval-last-sexp
+       :desc "Evaluate elisp in region" "r" #'eval-region))
+
+(map! :leader
+      (:prefix ("r" . "registers")
+       :desc "Copy to register" "c" #'copy-to-register
+       :desc "Frameset to register" "f" #'frameset-to-register
+       :desc "Insert contents of register" "i" #'insert-register
+       :desc "Jump to register" "j" #'jump-to-register
+       :desc "List registers" "l" #'list-registers
+       :desc "Number to register" "n" #'number-to-register
+       :desc "Interactively choose a register" "r" #'counsel-register
+       :desc "View a register" "v" #'view-register
+       :desc "Window configuration to register" "w" #'window-configuration-to-register
+       :desc "Increment register" "+" #'increment-register
+       :desc "Point to register" "SPC" #'point-to-register))
+
+(when (not (string= platform "TERMUX"))
+(use-package lsp-mode
+  :bind (:map lsp-mode-map
+         ("TAB" . completion-at-point))
+  :custom (lsp-headerline-breadcrumb-enable nil))
+)
 
 (add-hook 'dired-mode-hook 'org-download-enable)
 
@@ -639,19 +330,218 @@
         :n "D"   #'deft-archive-file
         :n "q"   #'kill-this-buffer-volatile)
 
-(map! :leader
-      (:prefix ("r" . "registers")
-       :desc "Copy to register" "c" #'copy-to-register
-       :desc "Frameset to register" "f" #'frameset-to-register
-       :desc "Insert contents of register" "i" #'insert-register
-       :desc "Jump to register" "j" #'jump-to-register
-       :desc "List registers" "l" #'list-registers
-       :desc "Number to register" "n" #'number-to-register
-       :desc "Interactively choose a register" "r" #'counsel-register
-       :desc "View a register" "v" #'view-register
-       :desc "Window configuration to register" "w" #'window-configuration-to-register
-       :desc "Increment register" "+" #'increment-register
-       :desc "Point to register" "SPC" #'point-to-register))
+(use-package ledger-mode
+  :mode ("\\.dat\\'"
+         "\\.ledger\\'")
+  :bind (:map ledger-mode-map
+              ("C-x C-s" . my/ledger-save))
+  :hook (ledger-mode . ledger-flymake-enable)
+  :preface
+  (defun my/ledger-save ()
+    "Automatically clean the ledger buffer at each save."
+    (interactive)
+    (ledger-mode-clean-buffer)
+    (save-buffer))
+  :custom
+  (ledger-clear-whole-transactions t)
+  (ledger-reconcile-default-commodity "INR")
+  (add-to-list 'evil-emacs-state-modes 'ledger-report-mode)
+  (ledger-reports
+   '(("account statement" "%(binary) reg --real [[ledger-mode-flags]] -f %(ledger-file) ^%(account)")
+     ("balance sheet" "%(binary) --real [[ledger-mode-flags]] -f %(ledger-file) bal ^assets ^liabilities ^equity")
+     ("budget" "%(binary) --empty -S -T [[ledger-mode-flags]] -f %(ledger-file) bal ^assets:bank ^assets:receivables ^assets:cash ^assets:budget")
+     ("budget goals" "%(binary) --empty -S -T [[ledger-mode-flags]] -f %(ledger-file) bal ^assets:bank ^assets:receivables ^assets:cash ^assets:'budget goals'")
+     ("budget obligations" "%(binary) --empty -S -T [[ledger-mode-flags]] -f %(ledger-file) bal ^assets:bank ^assets:receivables ^assets:cash ^assets:'budget obligations'")
+     ("budget debts" "%(binary) --empty -S -T [[ledger-mode-flags]] -f %(ledger-file) bal ^assets:bank ^assets:receivables ^assets:cash ^assets:'budget debts'")
+     ("cleared" "%(binary) cleared [[ledger-mode-flags]] -f %(ledger-file)")
+     ("equity" "%(binary) --real [[ledger-mode-flags]] -f %(ledger-file) equity")
+     ("income statement" "%(binary) --invert --real -S -T [[ledger-mode-flags]] -f %(ledger-file) bal ^income ^expenses -p \"this month\""))
+   (ledger-report-use-header-line nil)))
+
+(use-package flycheck-ledger :after ledger-mode)
+
+(use-package! elfeed-goodies)
+(elfeed-goodies/setup)
+(setq elfeed-goodies/entry-pane-size 0.5)
+(add-hook 'elfeed-show-mode-hook 'visual-line-mode)
+(evil-define-key 'normal elfeed-show-mode-map
+  (kbd "J") 'elfeed-goodies/split-show-next
+  (kbd "K") 'elfeed-goodies/split-show-prev)
+(evil-define-key 'normal elfeed-search-mode-map
+  (kbd "J") 'elfeed-goodies/split-show-next
+  (kbd "K") 'elfeed-goodies/split-show-prev)
+(setq elfeed-db-directory (expand-file-name "elfeed" user-emacs-directory))
+(setq rmh-elfeed-org-files (list "~/org/elfeed.org"))
+;; (setq elfeed-feeds (quote (
+;;                      ("https://www.reddit.com/r/emacs.rss" reddit emacs)
+;;                      ("https://sachachua.com/blog/category/emacs/feed" sachachua emacs)
+;;                      ("http://feeds.bbci.co.uk/news/world/rss.xml" news world bbc)
+;;                      ("https://www.aljazeera.com/xml/rss/all.xml" news world aljazeera)
+;;                      ("https://www.dnaindia.com/feeds/india.xml" news india dna)
+;;                      ("https://indianexpress.com/feed/" news india indianexpress)
+;;                      ("https://timesofindia.indiatimes.com/rssfeedstopstories.cms" news india timesofindia)
+;;                      ("http://feeds.bbci.co.uk/news/technology/rss.xml" news tech bbc)
+;;                      ("https://www.wired.com/feed/rss" news tech wired)
+;;                      ("https://www.technologyreview.com/feed/" news tech mit)
+;;                      ("https://www.sciencedaily.com/rss/top/science.xml" nature sciencedaily)
+;;                      ("https://www.sciencedaily.com/rss/top.xml" nature topscience)
+;;                      ("https://www.jetpens.com/blog/feed" stationery jetpens)
+;;                     )))
+
+(map! :map elfeed-search-mode-map
+      :after elfeed-search
+      [remap kill-this-buffer] "q"
+      [remap kill-buffer] "q"
+      :n doom-leader-key nil
+      ;; :n "q" #'+rss/quit
+      :n "e" #'elfeed-update
+      :n "r" #'elfeed-search-untag-all-unread
+      :n "u" #'elfeed-search-tag-all-unread
+      :n "s" #'elfeed-search-live-filter
+      :n "RET" #'elfeed-search-show-entry
+      :n "p" #'elfeed-show-pdf
+      :n "+" #'elfeed-search-tag-all
+      :n "-" #'elfeed-search-untag-all
+      :n "S" #'elfeed-search-set-filter
+      :n "b" #'elfeed-search-browse-url
+      :n "y" #'elfeed-search-yank)
+
+(map! :map elfeed-show-mode-map
+      :after elfeed-show
+      [remap kill-this-buffer] "q"
+      [remap kill-buffer] "q"
+      :n doom-leader-key nil
+      :nm "q" #'+rss/delete-pane
+      :nm "o" #'ace-link-elfeed
+      :nm "RET" #'org-ref-elfeed-add
+      :nm "n" #'elfeed-show-next
+      :nm "N" #'elfeed-show-prev
+      :nm "p" #'elfeed-show-pdf
+      :nm "+" #'elfeed-show-tag
+      :nm "-" #'elfeed-show-untag
+      :nm "s" #'elfeed-show-new-live-search
+      :nm "y" #'elfeed-show-yank)
+
+(after! elfeed-search
+  (set-evil-initial-state! 'elfeed-search-mode 'normal))
+(after! elfeed-show-mode
+  (set-evil-initial-state! 'elfeed-show-mode   'normal))
+
+(after! evil-snipe
+  (push 'elfeed-show-mode   evil-snipe-disabled-modes)
+  (push 'elfeed-search-mode evil-snipe-disabled-modes))
+
+(after! elfeed
+
+  ;; (elfeed-org)
+  (use-package! elfeed-link)
+
+  (setq elfeed-search-filter "@4-week-ago +unread"
+        elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
+        elfeed-search-title-min-width 80
+        elfeed-show-entry-switch #'pop-to-buffer
+        elfeed-show-entry-delete #'+rss/delete-pane
+        elfeed-show-refresh-function #'+rss/elfeed-show-refresh--better-style
+        shr-max-image-proportion 0.6)
+
+  (add-hook! 'elfeed-show-mode-hook (hide-mode-line-mode 1))
+  (add-hook! 'elfeed-search-update-hook #'hide-mode-line-mode)
+
+  (defface elfeed-show-title-face '((t (:weight ultrabold :slant italic :height 1.5)))
+    "title face in elfeed show buffer"
+    :group 'elfeed)
+  (defface elfeed-show-author-face `((t (:weight light)))
+    "title face in elfeed show buffer"
+    :group 'elfeed)
+  (set-face-attribute 'elfeed-search-title-face nil
+                      :foreground 'nil
+                      :weight 'light)
+
+  (defadvice! +rss-elfeed-wrap-h-nicer ()
+    "Enhances an elfeed entry's readability by wrapping it to a width of `fill-column' and centering it with `visual-fill-column-mode'."
+    :override #'+rss-elfeed-wrap-h
+    (setq-local truncate-lines nil
+                shr-width 120
+                visual-fill-column-center-text t
+                default-text-properties '(line-height 1.1))
+    (let ((inhibit-read-only t)
+          (inhibit-modification-hooks t))
+      (visual-fill-column-mode)
+      ;; (setq-local shr-current-font '(:family "Merriweather" :height 1.2))
+      (set-buffer-modified-p nil)))
+
+  (defun +rss/elfeed-search-print-entry (entry)
+    "Print ENTRY to the buffer."
+    (let* ((elfeed-goodies/tag-column-width 40)
+           (elfeed-goodies/feed-source-column-width 30)
+           (title (or (elfeed-meta entry :title) (elfeed-entry-title entry) ""))
+           (title-faces (elfeed-search--faces (elfeed-entry-tags entry)))
+           (feed (elfeed-entry-feed entry))
+           (feed-title
+            (when feed
+              (or (elfeed-meta feed :title) (elfeed-feed-title feed))))
+           (tags (mapcar #'symbol-name (elfeed-entry-tags entry)))
+           (tags-str (concat (mapconcat 'identity tags ",")))
+           (title-width (- (window-width) elfeed-goodies/feed-source-column-width
+                           elfeed-goodies/tag-column-width 4))
+
+           (tag-column (elfeed-format-column
+                        tags-str (elfeed-clamp (length tags-str)
+                                               elfeed-goodies/tag-column-width
+                                               elfeed-goodies/tag-column-width)
+                        :left))
+           (feed-column (elfeed-format-column
+                         feed-title (elfeed-clamp elfeed-goodies/feed-source-column-width
+                                                  elfeed-goodies/feed-source-column-width
+                                                  elfeed-goodies/feed-source-column-width)
+                         :left)))
+
+      (insert (propertize feed-column 'face 'elfeed-search-feed-face) " ")
+      (insert (propertize tag-column 'face 'elfeed-search-tag-face) " ")
+      (insert (propertize title 'face title-faces 'kbd-help title))
+      (setq-local line-spacing 0.2)))
+
+  (defun +rss/elfeed-show-refresh--better-style ()
+    "Update the buffer to match the selected entry, using a mail-style."
+    (interactive)
+    (let* ((inhibit-read-only t)
+           (title (elfeed-entry-title elfeed-show-entry))
+           (date (seconds-to-time (elfeed-entry-date elfeed-show-entry)))
+           (author (elfeed-meta elfeed-show-entry :author))
+           (link (elfeed-entry-link elfeed-show-entry))
+           (tags (elfeed-entry-tags elfeed-show-entry))
+           (tagsstr (mapconcat #'symbol-name tags ", "))
+           (nicedate (format-time-string "%a, %e %b %Y %T %Z" date))
+           (content (elfeed-deref (elfeed-entry-content elfeed-show-entry)))
+           (type (elfeed-entry-content-type elfeed-show-entry))
+           (feed (elfeed-entry-feed elfeed-show-entry))
+           (feed-title (elfeed-feed-title feed))
+           (base (and feed (elfeed-compute-base (elfeed-feed-url feed)))))
+      (erase-buffer)
+      (insert "\n")
+      (insert (format "%s\n\n" (propertize title 'face 'elfeed-show-title-face)))
+      (insert (format "%s\t" (propertize feed-title 'face 'elfeed-search-feed-face)))
+      (when (and author elfeed-show-entry-author)
+        (insert (format "%s\n" (propertize author 'face 'elfeed-show-author-face))))
+      (insert (format "%s\n\n" (propertize nicedate 'face 'elfeed-log-date-face)))
+      (when tags
+        (insert (format "%s\n"
+                        (propertize tagsstr 'face 'elfeed-search-tag-face))))
+      ;; (insert (propertize "Link: " 'face 'message-header-name))
+      ;; (elfeed-insert-link link link)
+      ;; (insert "\n")
+      (cl-loop for enclosure in (elfeed-entry-enclosures elfeed-show-entry)
+               do (insert (propertize "Enclosure: " 'face 'message-header-name))
+               do (elfeed-insert-link (car enclosure))
+               do (insert "\n"))
+      (insert "\n")
+      (if content
+          (if (eq type 'html)
+              (elfeed-insert-html content base)
+            (insert content))
+        (insert (propertize "(empty)\n" 'face 'italic)))
+      (goto-char (point-min))))
+  )
 
 (when (not (string= platform "TERMUX"))
 ;;Control Spotify from within Emacs!
@@ -664,6 +554,120 @@
        :desc "Spotify play previous track" "p" #'counsel-spotify-previous
        :desc "Spotify play next track" "n" #'counsel-spotify-next))
 )
+
+(defun org2blog-init-login()
+  (interactive)
+  (org2blog/wp-login))
+
+(defun org2blog-init-ui()
+  (interactive)
+  ;;(org2blog/wp-login)
+  (org2blog-user-interface))
+
+(setq org2blog/wp-blog-alist
+      '(("framesofnature"
+         :url "https://framesofnature.com/xmlrpc.php"
+         :username "santh0sh"
+         :password "v3ue2wux")))
+(map! :leader
+      (:prefix ("j" . "Journaling & Blogging")
+       :desc "Login to your Blog" "l" #'org2blog-init-login
+       :desc "Start Blogging" "b" #'org2blog-init-ui))
+
+;; https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-than-3-months
+(defun dt/year-calendar (&optional year)
+  (interactive)
+  (require 'calendar)
+  (let* (
+      (current-year (number-to-string (nth 5 (decode-time (current-time)))))
+      (month 0)
+      (year (if year year (string-to-number (format-time-string "%Y" (current-time))))))
+    (switch-to-buffer (get-buffer-create calendar-buffer))
+    (when (not (eq major-mode 'calendar-mode))
+      (calendar-mode))
+    (setq displayed-month month)
+    (setq displayed-year year)
+    (setq buffer-read-only nil)
+    (erase-buffer)
+    ;; horizontal rows
+    (dotimes (j 4)
+      ;; vertical columns
+      (dotimes (i 3)
+        (calendar-generate-month
+          (setq month (+ month 1))
+          year
+          ;; indentation / spacing between months
+          (+ 5 (* 25 i))))
+      (goto-char (point-max))
+      (insert (make-string (- 10 (count-lines (point-min) (point-max))) ?\n))
+      (widen)
+      (goto-char (point-max))
+      (narrow-to-region (point-max) (point-max)))
+    (widen)
+    (goto-char (point-min))
+    (setq buffer-read-only t)))
+
+(defun dt/scroll-year-calendar-forward (&optional arg event)
+  "Scroll the yearly calendar by year in a forward direction."
+  (interactive (list (prefix-numeric-value current-prefix-arg)
+                     last-nonmenu-event))
+  (unless arg (setq arg 0))
+  (save-selected-window
+    (if (setq event (event-start event)) (select-window (posn-window event)))
+    (unless (zerop arg)
+      (let* (
+              (year (+ displayed-year arg)))
+        (dt/year-calendar year)))
+    (goto-char (point-min))
+    (run-hooks 'calendar-move-hook)))
+
+(defun dt/scroll-year-calendar-backward (&optional arg event)
+  "Scroll the yearly calendar by year in a backward direction."
+  (interactive (list (prefix-numeric-value current-prefix-arg)
+                     last-nonmenu-event))
+  (dt/scroll-year-calendar-forward (- (or arg 1)) event))
+
+(map! :leader
+      :desc "Scroll year calendar backward" "<left>" #'dt/scroll-year-calendar-backward
+      :desc "Scroll year calendar forward" "<right>" #'dt/scroll-year-calendar-forward)
+
+(defalias 'year-calendar 'dt/year-calendar)
+
+(use-package! calfw)
+(use-package! calfw-org)
+
+(when (not (string= platform "TERMUX"))
+(add-to-list 'load-path "~/.emacs.d/.local/straight/repos/eaf/")
+(require 'eaf)
+(require 'eaf-browser)
+(require 'eaf-pdf-viewer)
+
+(use-package eaf
+  :custom
+  (eaf-browser-continue-where-left-off t)
+  :config
+  (setq eaf-browser-enable-adblocker t)
+  (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key nil "M-q" eaf-browser-keybinding))
+
+  (require 'eaf-evil)
+
+(define-key key-translation-map (kbd "SPC")
+    (lambda (prompt)
+      (if (derived-mode-p 'eaf-mode)
+          (pcase eaf--buffer-app-name
+            ("browser" (if  (string= (eaf-call-sync "call_function" eaf--buffer-id "is_focus") "True")
+                           (kbd "SPC")
+                         (kbd eaf-evil-leader-key)))
+            ("pdf-viewer" (kbd eaf-evil-leader-key))
+            ("image-viewer" (kbd eaf-evil-leader-key))
+            (_  (kbd "SPC")))
+        (kbd "SPC"))))
+)
+
+(use-package emojify
+  :hook (after-init . global-emojify-mode))
 
 (use-package! visual-fill-column)
 
@@ -700,7 +704,6 @@
     (display-battery-mode 1))                       ; it's nice to know how much power you have
 
   (global-subword-mode 1)                           ; Iterate through CamelCase words
-  (setq display-line-numbers-type t)
   (ace-link-setup-default)
 
   ;; Start maximised (cross-platf)
