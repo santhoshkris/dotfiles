@@ -37,6 +37,18 @@ My personal Doom Emacs config. Doom Emacs is a distribution of Emacs that uses t
 #+begin_src emacs-lisp
 
 (setq platform "MAC")
+;; Minimize garbage collection during startup
+(setq gc-cons-threshold most-positive-fixnum)
+
+;; Lower threshold back to 8 MiB (default is 800kB)
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq gc-cons-threshold (expt 2 23))))
+
+(setq read-process-output-max (* 1024 1024))
+
+;; Don't die when handling large, minified files
+(global-so-long-mode 1)
 
 #+end_src
 * DOOM Theme
@@ -77,7 +89,6 @@ Configure the DOOM Dasboard to make it minimalist and beautiful
 
 ;; Set up the visible bell
 (setq visible-bell t)
-
 #+end_src
 
 * EVIL

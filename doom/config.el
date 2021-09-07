@@ -1,4 +1,16 @@
 (setq platform "MAC")
+;; Minimize garbage collection during startup
+(setq gc-cons-threshold most-positive-fixnum)
+
+;; Lower threshold back to 8 MiB (default is 800kB)
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq gc-cons-threshold (expt 2 23))))
+
+(setq read-process-output-max (* 1024 1024))
+
+;; Don't die when handling large, minified files
+(global-so-long-mode 1)
 
 ;;(setq doom-theme 'doom-gruvbox)
 (setq doom-theme 'doom-dracula)
