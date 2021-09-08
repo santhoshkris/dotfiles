@@ -61,4 +61,5 @@
 (package! ivy-posframe)
 (package! visual-fill-column)
 (package! eaf)
+(package! dap-mode)
 

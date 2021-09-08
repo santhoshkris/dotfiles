@@ -95,6 +95,7 @@
        ;;gist              ; interacting with github gists
        lookup              ; navigate your code and its documentation
        lsp               ; M-x vscode
+       dap-mode
        magit             ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
        ;;pass              ; password manager for nerds
@@ -158,7 +159,9 @@
         +org-bullets
 	+present)          ; organize your plain life in plain text
        (org-superstar)
-       (php +lsp)               ; perl's insecure younger brother
+       (php 
+	 +lsp
+	 +dap-mode)             ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
        (python +lsp)           ; beautiful is better than ugly

@@ -16,6 +16,8 @@
 - [[#evaluate-elisp-expressions][EVALUATE ELISP EXPRESSIONS]]
 - [[#registers][REGISTERS]]
 - [[#lsp][LSP]]
+- [[#dap][DAP]]
+  - [[#php][PHP]]
 - [[#org-mode][ORG MODE]]
 - [[#org-roam--deft][ORG ROAM & DEFT]]
 - [[#ledger][LEDGER]]
@@ -263,6 +265,18 @@ Setup the Language Servers
   :bind (:map lsp-mode-map
          ("TAB" . completion-at-point))
   :custom (lsp-headerline-breadcrumb-enable nil))
+)
+
+#+END_SRC
+
+* DAP
+Setup the Debug connectors
+
+** PHP
+#+BEGIN_SRC emacs-lisp
+
+(when (not (string= platform "TERMUX"))
+  (require 'dap-php)
 )
 
 #+END_SRC

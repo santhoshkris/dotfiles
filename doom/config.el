@@ -132,6 +132,10 @@
   :custom (lsp-headerline-breadcrumb-enable nil))
 )
 
+(when (not (string= platform "TERMUX"))
+  (require 'dap-php)
+)
+
 (add-hook 'dired-mode-hook 'org-download-enable)
 
 (defun my/org-mode/load-prettify-symbols () "Prettify org mode keywords"
