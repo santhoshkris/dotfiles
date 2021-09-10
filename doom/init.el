@@ -23,7 +23,10 @@
        company           ; the ultimate code completion backend
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
-       ivy               ; a search engine for love and life
+       (ivy 
+	 +icons 
+	 +prescient 
+	 +fuzzy)              ; a search engine for love and life
        vertico           ; the search engine of the future
 
        :ui
@@ -41,7 +44,9 @@
        nav-flash         ; blink cursor line after big motions
        ;;neotree           ; a project drawer, like NERDTree for vim
        ophints           ; highlight the region an operation acts on
-       (popup +defaults)   ; tame sudden yet inevitable temporary windows
+       (popup 
+	 +all 
+	 +defaults)   ; tame sudden yet inevitable temporary windows
        ;;tabs              ; a tab bar for Emacs
        treemacs          ; a project drawer, like neotree but cooler
        ;;unicode           ; extended unicode support for various languages
@@ -63,7 +68,7 @@
        ;;parinfer          ; turn lisp into python, sort of
        ;;rotate-text       ; cycle region at point between text candidates
        snippets          ; my elves. They type so I don't have to
-       ;;word-wrap         ; soft wrapping with language-aware indent
+       word-wrap         ; soft wrapping with language-aware indent
 
        :emacs
        (dired 
@@ -94,7 +99,8 @@
        (eval +overlay)     ; run code, run (also, repls)
        ;;gist              ; interacting with github gists
        lookup              ; navigate your code and its documentation
-       lsp               ; M-x vscode
+       (lsp 
+	 +peek)              ; M-x vscode
        dap-mode
        magit             ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
@@ -190,6 +196,7 @@
 
        :app
        ;;calendar
+       org-gcal
        eaf
        emms
        simple-httpd

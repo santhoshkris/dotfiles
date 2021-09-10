@@ -62,4 +62,4 @@
 (package! visual-fill-column)
 (package! eaf)
 (package! dap-mode)
-
+(package! org-gcal)

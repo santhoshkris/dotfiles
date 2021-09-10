@@ -201,6 +201,8 @@
 
 (after! org
         (setq org-agenda-files '("~/org/gtd/inbox.org"
+                                 "~/org/gtd/work-cal.org"
+                                 "~/org/gtd/personal-cal.org"
                          "~/org/gtd/gtd.org"
                          "~/org/gtd/tickler.org"))
 
@@ -278,7 +280,29 @@
 
         (setq org-agenda-custom-commands
                 '(("o" "At the office" tags-todo "@office"
-                ((org-agenda-overriding-header "Office"))))))
+                ((org-agenda-overriding-header "Office")))))
+
+(setq org-agenda-compact-blocks nil)
+(setq org-agenda-restore-windows-after-quit t)
+(setq org-agenda-skip-deadline-if-done t)
+(setq org-agenda-skip-scheduled-if-done t)
+(setq org-deadline-warning-days 90)
+(setq org-agenda-start-on-weekday nil)
+(setq org-agenda-sorting-strategy
+      (quote
+       ((agenda priority-down alpha-up)
+        (todo priority-down alpha-up)
+        (tags priority-down alpha-up))))
+(setq org-agenda-prefix-format
+      (quote
+       ((agenda . "%s %?-12t %e ")
+        (timeline . "  %s")
+        (todo . " %i %e ")
+        (tags . " %i %e ")
+        (search . " %i %e "))))
+(setq org-columns-default-format
+      "%75ITEM %TODO %PRIORITY %SCHEDULED %DEADLINE %CLOSED %ALLTAGS")
+)
 
 (after! org-roam
 (setq org-roam-directory "~/org/roam")
@@ -597,6 +621,13 @@
       (:prefix ("j" . "Journaling & Blogging")
        :desc "Login to your Blog" "l" #'org2blog-init-login
        :desc "Start Blogging" "b" #'org2blog-init-ui))
+
+(require 'org-gcal)
+(setq org-gcal-client-id "935116837597-uq64hfuicj3s4u9ugptqsb035m02ni2v.apps.googleusercontent.com"
+      org-gcal-client-secret "YldSJ452JQrHC9yE1mr8kBIW"
+      org-gcal-file-alist '(("santhosh.kris@gmail.com" .  "~/org/gtd/personal-cal.org")))
+;;(add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync) ))
+;;(add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync) ))
 
 ;; https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-than-3-months
 (defun dt/year-calendar (&optional year)
