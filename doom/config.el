@@ -203,6 +203,7 @@
         (setq org-agenda-files '("~/org/gtd/inbox.org"
                                  "~/org/gtd/work-cal.org"
                                  "~/org/gtd/personal-cal.org"
+                                 "~/org/gtd/anniversaries.org"
                          "~/org/gtd/gtd.org"
                          "~/org/gtd/tickler.org"))
 
@@ -221,7 +222,7 @@
 
   (defvar my/org-ledger-card-template "%(org-read-date) %^{Payee}
   Expenses:%^{Account}    ₹%^{Amount}
-  Liabilities:CreditCards:Manhattan" "Template for credit card transaction with ledger.")
+  Liabilities:CC:Manhattan" "Template for credit card transaction with ledger.")
 
   (defvar my/org-ledger-cash-template "%(org-read-date) * %^{Payee}
   Expenses:%^{Account}  ₹%^{Amount}
@@ -798,6 +799,16 @@
 
 ;; Hide the menu for as minimalistic a startup screen as possible.
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
+
+(defun enable_word_wrap()
+  (setq-default word-wrap t)
+  (setq fill-column 90)
+  (setq visual-fill-column-width 90)
+  (global-visual-fill-column-mode +1)
+  (+global-word-wrap-mode +1)
+  )
+
+(enable_word_wrap)
 
 (map! :leader
       (:prefix ("t" . "Yoda - Global Zen Mode")
