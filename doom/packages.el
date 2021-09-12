@@ -63,3 +63,4 @@
 (package! eaf)
 (package! dap-mode)
 (package! org-gcal)
+(package! sudoku)
