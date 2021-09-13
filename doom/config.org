@@ -31,6 +31,7 @@
 - [[#calendar][CALENDAR]]
 - [[#eaf][EAF]]
 - [[#emojis][EMOJIS]]
+- [[#games][GAMES]]
 - [[#miscellaneous-settings][MISCELLANEOUS SETTINGS]]
 
 * ABOUT THIS CONFIG FILE
@@ -938,6 +939,15 @@ Emojify is an Emacs extension to display emojis. It can display github style emo
 #+begin_src emacs-lisp
 (use-package emojify
   :hook (after-init . global-emojify-mode))
+#+end_src
+
+* GAMES
+Play some Games in EMACS :-)
+
+#+begin_src emacs-lisp
+;;going with the 'medium' to begin with
+(setq sudoku-level 'medium)
+
 #+end_src
 
 * MISCELLANEOUS SETTINGS

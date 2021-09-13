@@ -725,6 +725,9 @@
 (use-package emojify
   :hook (after-init . global-emojify-mode))
 
+;;going with the 'medium' to begin with
+(setq sudoku-level 'medium)
+
 (use-package! visual-fill-column)
 
 (after! which-key
