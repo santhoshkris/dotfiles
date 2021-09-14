@@ -7,7 +7,8 @@ export PATH=/usr/local/bin:$PATH:/usr/local/mysql/bin:/Applications/Postgres.app
 export PATH="/usr/local/opt/php@7.4/bin:$PATH"
 export PATH="/usr/local/opt/php@7.4/sbin:$PATH"
 export GOPATH=~/go/lib
-
+export AWS_ACCESS_KEY_ID=
+export AWS_SECRET_ACCESS_KEY=
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
