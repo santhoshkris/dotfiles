@@ -16,6 +16,7 @@
 - [[#evaluate-elisp-expressions][EVALUATE ELISP EXPRESSIONS]]
 - [[#registers][REGISTERS]]
 - [[#lsp][LSP]]
+  - [[#terraform][Terraform]]
 - [[#dap][DAP]]
   - [[#php][PHP]]
 - [[#org-mode][ORG MODE]]
@@ -269,6 +270,22 @@ Setup the Language Servers
 )
 
 #+END_SRC
+
+** Terraform
+
+#+BEGIN_SRC emacs-lisp
+
+(when (not (string= platform "TERMUX"))
+(lsp-register-client
+ (make-lsp-client :new-connection (lsp-stdio-connection '("/usr/local/bin/terraform-ls" "serve"))
+                  :major-modes '(terraform-mode)
+                  :server-id 'terraform-ls))
+
+(add-hook 'terraform-mode-hook #'lsp-deferred)
+)
+
+#+END_SRC
+
 
 * DAP
 Setup the Debug connectors
