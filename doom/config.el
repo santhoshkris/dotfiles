@@ -701,35 +701,35 @@
 (use-package! calfw)
 (use-package! calfw-org)
 
-(when (not (string= platform "TERMUX"))
-(add-to-list 'load-path "~/.emacs.d/.local/straight/repos/eaf/")
-(require 'eaf)
-(require 'eaf-browser)
-(require 'eaf-pdf-viewer)
+;; (when (not (string= platform "TERMUX"))
+;; (add-to-list 'load-path "~/.emacs.d/.local/straight/repos/eaf/")
+;; (require 'eaf)
+;; (require 'eaf-browser)
+;; (require 'eaf-pdf-viewer)
 
-(use-package eaf
-  :custom
-  (eaf-browser-continue-where-left-off t)
-  :config
-  (setq eaf-browser-enable-adblocker t)
-  (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key nil "M-q" eaf-browser-keybinding))
+;; (use-package eaf
+;;   :custom
+;;   (eaf-browser-continue-where-left-off t)
+;;   :config
+;;   (setq eaf-browser-enable-adblocker t)
+;;   (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
+;;   (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
+;;   (eaf-bind-key nil "M-q" eaf-browser-keybinding))
 
-  (require 'eaf-evil)
+;;   (require 'eaf-evil)
 
-(define-key key-translation-map (kbd "SPC")
-    (lambda (prompt)
-      (if (derived-mode-p 'eaf-mode)
-          (pcase eaf--buffer-app-name
-            ("browser" (if  (string= (eaf-call-sync "call_function" eaf--buffer-id "is_focus") "True")
-                           (kbd "SPC")
-                         (kbd eaf-evil-leader-key)))
-            ("pdf-viewer" (kbd eaf-evil-leader-key))
-            ("image-viewer" (kbd eaf-evil-leader-key))
-            (_  (kbd "SPC")))
-        (kbd "SPC"))))
-)
+;; (define-key key-translation-map (kbd "SPC")
+;;     (lambda (prompt)
+;;       (if (derived-mode-p 'eaf-mode)
+;;           (pcase eaf--buffer-app-name
+;;             ("browser" (if  (string= (eaf-call-sync "call_function" eaf--buffer-id "is_focus") "True")
+;;                            (kbd "SPC")
+;;                          (kbd eaf-evil-leader-key)))
+;;             ("pdf-viewer" (kbd eaf-evil-leader-key))
+;;             ("image-viewer" (kbd eaf-evil-leader-key))
+;;             (_  (kbd "SPC")))
+;;         (kbd "SPC"))))
+;; )
 
 (use-package emojify
   :hook (after-init . global-emojify-mode))
