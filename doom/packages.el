@@ -65,3 +65,4 @@
 (package! org-gcal)
 (package! sudoku)
 (package! focus)
+(package! nov)

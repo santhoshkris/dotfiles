@@ -737,6 +737,14 @@
 ;;going with the 'medium' to begin with
 (setq sudoku-level 'medium)
 
+(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+;;Some additional settings
+(setq nov-text-width 80)
+(defun my-nov-font-setup ()
+  (face-remap-add-relative 'variable-pitch :family "Liberation Serif"
+                                           :height 1.4))
+(add-hook 'nov-mode-hook 'my-nov-font-setup)
+
 (use-package! visual-fill-column)
 
 (after! which-key
