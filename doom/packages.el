@@ -64,3 +64,4 @@
 (package! dap-mode)
 (package! org-gcal)
 (package! sudoku)
+(package! focus)
