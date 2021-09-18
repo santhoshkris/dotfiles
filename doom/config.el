@@ -731,6 +731,28 @@
 ;;         (kbd "SPC"))))
 ;; )
 
+;; we installed this with homebrew
+(setq mu4e-mu-binary (executable-find "mu"))
+
+;; this is the directory we created before:
+(setq mu4e-maildir "~/MailDir")
+
+;; this command is called to sync imap servers:
+(setq mu4e-get-mail-command (concat (executable-find "mbsync") " -a"))
+;; how often to call it in seconds:
+(setq mu4e-update-interval 300)
+
+;; save attachment to desktop by default
+;; or another choice of yours:
+(setq mu4e-attachment-dir "~/Downloads")
+
+;; rename files when moving - needed for mbsync:
+(setq mu4e-change-filenames-when-moving t)
+
+;; list of your email adresses:
+(setq mu4e-user-mail-address-list '("santhosh.fon@gmail.com"
+                                    "santhosh.kris@gmail.com"))
+
 (use-package emojify
   :hook (after-init . global-emojify-mode))
 

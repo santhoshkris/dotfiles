@@ -31,6 +31,7 @@
 - [[#blogging][BLOGGING]]
 - [[#calendar][CALENDAR]]
 - [[#eaf][EAF]]
+- [[#email][EMAIL]]
 - [[#emojis][EMOJIS]]
 - [[#games][GAMES]]
 - [[#epub][EPUB]]
@@ -949,6 +950,34 @@ Don't use them as much. Commenting them out.
 ;;         (kbd "SPC"))))
 ;; )
 #+END_SRC
+
+* EMAIL
+Read email in EMACS. Why not ? :-D It is quite awesome in-fact.
+
+#+begin_src emacs-lisp
+
+;; we installed this with homebrew
+(setq mu4e-mu-binary (executable-find "mu"))
+
+;; this is the directory we created before:
+(setq mu4e-maildir "~/MailDir")
+
+;; this command is called to sync imap servers:
+(setq mu4e-get-mail-command (concat (executable-find "mbsync") " -a"))
+;; how often to call it in seconds:
+(setq mu4e-update-interval 300)
+
+;; save attachment to desktop by default
+;; or another choice of yours:
+(setq mu4e-attachment-dir "~/Downloads")
+
+;; rename files when moving - needed for mbsync:
+(setq mu4e-change-filenames-when-moving t)
+
+;; list of your email adresses:
+(setq mu4e-user-mail-address-list '("santhosh.fon@gmail.com"
+                                    "santhosh.kris@gmail.com"))
+#+end_src
 
 * EMOJIS
 Emojify is an Emacs extension to display emojis. It can display github style emojis like :smile: or plain ascii ones like :).
