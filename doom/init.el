@@ -200,7 +200,7 @@
        (mu4e +gmail)
        (smtpmail)
        (org-mime)
-       notmuch
+       ;;notmuch
        ;;(wanderlust +gmail)
 
        :app
