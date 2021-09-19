@@ -66,3 +66,5 @@
 (package! sudoku)
 (package! focus)
 (package! nov)
+(package! smtpmail)
+(package! org-mime)

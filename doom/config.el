@@ -240,21 +240,21 @@
   :custom
   (org-capture-templates
    `(
-     ("B" "Book" checkitem (file+headline "~/org/other/books.org" "Books")
-      "- [ ] %^{Book}"
-      :immediate-finish t)
+     ;; ("B" "Book" checkitem (file+headline "~/org/other/books.org" "Books")
+     ;;  "- [ ] %^{Book}"
+     ;;  :immediate-finish t)
 
-     ("L" "Learning" checkitem (file+headline "~/org/other/learning.org" "Things")
-      "- [ ] %^{Thing}"
-      :immediate-finish t)
+     ;; ("L" "Learning" checkitem (file+headline "~/org/other/learning.org" "Things")
+     ;;  "- [ ] %^{Thing}"
+     ;;  :immediate-finish t)
 
-     ("M" "Movie" checkitem (file+headline "~/org/other/movies.org" "Movies")
-      "- [ ] %^{Movie}"
-      :immediate-finish t)
+     ;; ("M" "Movie" checkitem (file+headline "~/org/other/movies.org" "Movies")
+     ;;  "- [ ] %^{Movie}"
+     ;;  :immediate-finish t)
 
-     ("P" "Purchase" checkitem (file+headline "~/org/other/purchases.org" "Purchases")
-      "- [ ] %^{Item}"
-      :immediate-finish t)
+     ;; ("P" "Purchase" checkitem (file+headline "~/org/other/purchases.org" "Purchases")
+     ;;  "- [ ] %^{Item}"
+     ;;  :immediate-finish t)
 
      ("l" "Ledger")
 
@@ -273,10 +273,22 @@
       :empty-lines 1
       :immediate-finish t)
 
-      ("t" "Todo [inbox]" entry (file+headline "~/org/gtd/inbox.org" "Tasks")
+     ("m" "Mail")
+
+     ("mt" "Mail Todo" entry (file+headline "~/org/gtd/inbox.org" "Mail Tasks")
+       "* TODO /Action/ regarding /%:subject/ %a\n\n %i"
+       :empty-lines 1
+       :immediate-finish t)
+
+     ("mf" "Mail Follow Up" entry (file+headline "~/org/gtd/inbox.org" "Mail Tasks")
+       "* TODO /Follow up/ with /%:fromaddress/ regarding /%:subject/ %a\n\n %i"
+       :empty-lines 1
+       :immediate-finish t)
+
+     ("t" "Todo [inbox]" entry (file+headline "~/org/gtd/inbox.org" "Tasks")
        "* TODO %i%?")
 
-      ("T" "Tickler" entry (file+headline "~/org/gtd/tickler.org" "Tickler")
+     ("T" "Tickler" entry (file+headline "~/org/gtd/tickler.org" "Tickler")
        "* %i%? \n %U")
 
    ;;  ("t" "Task" entry (file+headline "~/org/agenda/organizer.org" "Tasks"),
@@ -731,6 +743,7 @@
 ;;         (kbd "SPC"))))
 ;; )
 
+(after! mu4e
 ;; we installed this with homebrew
 (setq mu4e-mu-binary (executable-find "mu"))
 
@@ -752,6 +765,183 @@
 ;; list of your email adresses:
 (setq mu4e-user-mail-address-list '("santhosh.fon@gmail.com"
                                     "santhosh.kris@gmail.com"))
+
+;;(setq   mu4e-maildir-shortcuts
+;;        '(("/gmail/INBOX" . ?f)
+;;          ("/gmail-kris/INBOX" . ?g)
+;;          ("/gmail-kris/[Gmail]/Sent Mail" . ?G)
+;;          ("/gmail-kris/[Gmail]/All Mail" . ?A)))
+
+
+(add-to-list 'mu4e-bookmarks
+             (make-mu4e-bookmark
+              :name "Inbox - Gmail-santhosh.fon"
+              :query "maildir:/gmail/INBOX"
+              :key ?f))
+
+(add-to-list 'mu4e-bookmarks
+             (make-mu4e-bookmark
+              :name "Inbox - Gmail-santhosh.kris"
+              :query "maildir:/gmail-kris/INBOX"
+              :key ?g))
+)
+
+(after! mu4e
+(require 'smtpmail)
+
+;; gpg encryptiom & decryption:
+;; this can be left alone
+;;(require 'epa-file)
+(epa-file-enable)
+(setq epa-pinentry-mode 'loopback)
+(auth-source-forget-all-cached)
+
+(setq mu4e-contexts
+      (list
+       ;; santhosh.kris Gmail
+       (make-mu4e-context
+        :name "kris"
+        :match-func
+          (lambda (msg)
+            (when msg
+              (string-prefix-p "/gmail-kris" (mu4e-message-field msg :maildir))))
+        :vars '((user-mail-address . "santhosh.kris@gmail.com")
+                (user-full-name    . "Santhosh Krishnamoorthy")
+                (smtpmail-smtp-server  . "smtp.gmail.com")
+                (smtpmail-smtp-service . 465)
+                (smtpmail-stream-type  . ssl)
+                (mu4e-drafts-folder  . "/gmail-kris/[Gmail]/Drafts")
+                (mu4e-sent-folder  . "/gmail-kris/[Gmail]/Sent Mail")
+                (mu4e-refile-folder  . "/gmail-kris/[Gmail]/All Mail")
+                (mu4e-trash-folder  . "/gmail-kris/[Gmail]/Trash")))
+
+       ;; santhosh.fon Gmail
+       (make-mu4e-context
+        :name "fon"
+        :match-func
+          (lambda (msg)
+            (when msg
+              (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
+        :vars '((user-mail-address . "santhosh.fon@gmail.com")
+                (user-full-name    . "Santhosh FON")
+                (smtpmail-smtp-server  . "smtp.gmail.com")
+                (smtpmail-smtp-service . 465)
+                (smtpmail-stream-type  . ssl)
+                (mu4e-drafts-folder  . "/gmail/[Gmail]/Drafts")
+                (mu4e-sent-folder  . "/gmail/[Gmail]/Sent Mail")
+                (mu4e-refile-folder  . "/gmail/[Gmail]/All Mail")
+                (mu4e-trash-folder  . "/gmail/[Gmail]/Trash")))))
+
+(setq mu4e-context-policy 'pick-first) ;; start with the first (default) context;
+(setq mu4e-compose-context-policy 'ask) ;; ask for context if no context matches;
+
+;; chose from account before sending
+;; this is a custom function that works for me.
+;; well I stole it somewhere long ago.
+;; I suggest using it to make matters easy
+;; of course adjust the email adresses and account descriptions
+(defun timu/set-msmtp-account ()
+  (if (message-mail-p)
+      (save-excursion
+        (let*
+            ((from (save-restriction
+                     (message-narrow-to-headers)
+                     (message-fetch-field "from")))
+             (account
+              (cond
+               ((string-match "santhosh.kris@gmail.com" from) "gmail-kris")
+               ((string-match "santhosh.fon@gmail.com" from) "gmail-fon")
+               ((string-match "dummy@example.com" from) "example"))))
+          (setq message-sendmail-extra-arguments (list '"-a" account))))))
+
+;;(add-hook 'message-send-mail-hook 'timu/set-msmtp-account)
+
+;; mu4e cc & bcc
+;; this is custom as well
+(add-hook 'mu4e-compose-mode-hook
+          (defun timu/add-cc-and-bcc ()
+            "My Function to automatically add Cc & Bcc: headers.
+    This is in the mu4e compose mode."
+            (save-excursion (message-add-header "Cc:\n"))
+            (save-excursion (message-add-header "Bcc:\n"))))
+
+;; mu4e address completion
+;;(add-hook 'mu4e-compose-mode-hook 'company-mode)
+
+
+;; don't keep message compose buffers around after sending:
+(setq message-kill-buffer-on-exit t)
+
+;; send function:
+;;(setq send-mail-function 'sendmail-send-it
+;;      message-send-mail-function 'sendmail-send-it)
+
+;; send program:
+;;(setq sendmail-program (executable-find "msmtp"))
+
+(setq sendmail-program (executable-find "msmtp")
+      message-sendmail-f-is-evil t
+      message-sendmail-extra-arguments '("--read-envelope-from")
+      send-mail-function 'smtpmail-send-it
+      message-send-mail-function 'message-send-mail-with-sendmail)
+
+;; select the right sender email from the context.
+(setq message-sendmail-envelope-from 'header)
+
+)
+
+(after! mu4e
+;; store link to message if in header view, not to header query:
+(setq org-mu4e-link-query-in-headers-mode nil)
+;; don't have to confirm when quitting:
+(setq mu4e-confirm-quit nil)
+;; number of visible headers in horizontal split view:
+(setq mu4e-headers-visible-lines 20)
+;; don't show threading by default:
+(setq mu4e-headers-show-threads nil)
+;; hide annoying "mu4e Retrieving mail..." msg in mini buffer:
+(setq mu4e-hide-index-messages t)
+;; customize the reply-quote-string:
+(setq message-citation-line-format "%N @ %Y-%m-%d %H:%M :\n")
+;; M-x find-function RET message-citation-line-format for docs:
+(setq message-citation-line-function 'message-insert-formatted-citation-line)
+;; by default do not show related emails:
+(setq mu4e-headers-include-related nil)
+;; by default do not show threads:
+(setq mu4e-headers-show-threads nil)
+
+
+(defun skm/capture-mail-todo-action (msg)
+  (interactive)
+  (call-interactively 'org-store-link)
+  (org-capture nil "mt"))
+
+(defun skm/capture-mail-follow-up-action (msg)
+  (interactive)
+  (call-interactively 'org-store-link)
+  (org-capture nil "mf"))
+
+;; Add custom actions for our capture templates
+(add-to-list 'mu4e-headers-actions
+  '("follow up" . skm/capture-mail-follow-up-action) t)
+(add-to-list 'mu4e-view-actions
+  '("follow up" . skm/capture-mail-follow-up-action) t)
+(add-to-list 'mu4e-headers-actions
+  '("todo add" . skm/capture-mail-todo-action) t)
+(add-to-list 'mu4e-view-actions
+  '("todo add" . skm/capture-mail-todo-action) t)
+
+(defun skm/store-link-to-mu4e-query ()
+  (interactive)
+  (let ((mu4e-org-link-query-in-headers-mode t))
+    (call-interactively 'org-store-link)))
+)
+
+(require 'org-mime)
+(setq org-mime-export-options '(:section-numbers nil
+                                :with-author nil
+                                :with-toc nil))
+(add-hook 'message-send-hook 'org-mime-confirm-when-no-multipart)
 
 (use-package emojify
   :hook (after-init . global-emojify-mode))

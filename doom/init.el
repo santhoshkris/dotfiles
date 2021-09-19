@@ -196,7 +196,10 @@
        ;;zig               ; C, but simpler
 
        :email
-       (mu4e +org +gmail)
+       ;;(mu4e +org +gmail)
+       (mu4e +gmail)
+       (smtpmail)
+       (org-mime)
        notmuch
        ;;(wanderlust +gmail)
 
