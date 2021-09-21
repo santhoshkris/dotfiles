@@ -6,8 +6,8 @@
 * TABLE OF CONTENTS :toc:
 - [[#about-this-config-file][ABOUT THIS CONFIG FILE]]
 - [[#platform][PLATFORM]]
-- [[#doom-theme][DOOM Theme]]
-- [[#doom-dashboard][DOOM DASHBOARD]]
+- [[#theme][THEME]]
+- [[#dashboard][DASHBOARD]]
 - [[#evil][EVIL]]
 - [[#ivy][IVY]]
   - [[#ivy-posframe][IVY-POSFRAME]]
@@ -60,12 +60,27 @@ My personal Doom Emacs config. Doom Emacs is a distribution of Emacs that uses t
 (global-so-long-mode 1)
 
 #+end_src
-* DOOM Theme
+* THEME
 Setup a nice theme for DOOM
 
 #+begin_src emacs-lisp
 ;;(setq doom-theme 'doom-gruvbox)
-(setq doom-theme 'doom-dracula)
+
+(use-package modus-themes
+  :init
+  ;; Add all your customizations prior to loading the themes
+  (setq modus-themes-italic-constructs t
+        modus-themes-bold-constructs nil
+        modus-themes-region '(bg-only no-extend))
+
+  ;; Load the theme files before enabling a theme
+  (modus-themes-load-themes)
+  :config
+  ;; Load the theme of your choice:
+  (modus-themes-load-operandi) ;; OR (modus-themes-load-vivendi)
+  :bind ("<f5>" . modus-themes-toggle))
+
+;;(setq doom-theme 'doom-dracula)
 (when (not (string= platform "TERMUX"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -78,7 +93,7 @@ Setup a nice theme for DOOM
       :desc "Load new theme" "h t" #'load-theme)
 #+end_src
 
-* DOOM DASHBOARD
+* DASHBOARD
 Configure the DOOM Dasboard to make it minimalist and beautiful
 
 #+begin_src emacs-lisp
@@ -221,7 +236,7 @@ Changing some keybindings from their defaults to better fit with Doom Emacs, and
 
 #+Begin_src emacs-lisp
 (map! :leader
-      (:prefix ("e". "evaluate/EWW")
+      (:prefix ("e". "evaluate/Email")
        :desc "Evaluate elisp in buffer" "b" #'eval-buffer
        :desc "Evaluate defun" "d" #'eval-defun
        :desc "Evaluate elisp expression" "e" #'eval-expression
@@ -362,7 +377,8 @@ Setup the Debug connectors
             ;; "BLOG(b)"           ; Blog writing assignments
             ;; "PROJ(p)"           ; A project that contains other tasks
             ;; "VIDEO(v)"          ; Video assignments
-             "WAITING(w)"           ; Something is holding up this task
+             "STARTED(s)"       ; Started working on it
+             "WAITING(w)"          ; Something is holding up this task
              "|"                 ; The pipe necessary to separate "active" states and "inactive" states
              "DONE(d)"           ; Task has been completed
              "CANCELLED(c)" )))) ; Task has been cancelled
@@ -372,8 +388,8 @@ Setup the Debug connectors
                                  "~/org/gtd/work-cal.org"
                                  "~/org/gtd/personal-cal.org"
                                  "~/org/gtd/anniversaries.org"
-                         "~/org/gtd/gtd.org"
-                         "~/org/gtd/tickler.org"))
+                                 "~/org/gtd/gtd.org"
+                                 "~/org/gtd/tickler.org"))
 
 (use-package org-capture
   :ensure nil
@@ -435,12 +451,12 @@ Setup the Debug connectors
      ("m" "Mail")
 
      ("mt" "Mail Todo" entry (file+headline "~/org/gtd/inbox.org" "Mail Tasks")
-       "* TODO /Action/ regarding /%:subject/ %a\n\n %i"
+       "* TODO Action - regarding /%:subject/ %a\n\n %i"
        :empty-lines 1
        :immediate-finish t)
 
      ("mf" "Mail Follow Up" entry (file+headline "~/org/gtd/inbox.org" "Mail Tasks")
-       "* TODO /Follow up/ with /%:fromaddress/ regarding /%:subject/ %a\n\n %i"
+       "* TODO Follow up with /%:fromaddress/ regarding /%:subject/ %a\n\n %i"
        :empty-lines 1
        :immediate-finish t)
 
@@ -456,7 +472,7 @@ Setup the Debug connectors
 	)))
 
 	(setq org-refile-targets '(("~/org/gtd/gtd.org" :maxlevel . 3)
-                           ("~/org/gtd/someday.org" :level . 1)
+                           ("~/org/gtd/someday.org" :maxlevel . 2)
                            ("~/org/gtd/tickler.org" :maxlevel . 2)))
 
         (setq org-agenda-custom-commands
@@ -639,6 +655,10 @@ An awesome RSS feed reader right from within EMACS
 ** KEYBINDINGS
 
 #+begin_src emacs-lisp
+
+(map! :leader
+      (:prefix ("e")
+       :desc "Open Elfeed" "f" #'elfeed))
 
 (map! :map elfeed-search-mode-map
       :after elfeed-search
@@ -1174,6 +1194,11 @@ Email in EMACS. Why not ? :-D It is quite awesome in-fact.
   (let ((mu4e-org-link-query-in-headers-mode t))
     (call-interactively 'org-store-link)))
 )
+
+(map! :leader
+      (:prefix ("e")
+       :desc "Open Email" "m" #'mu4e
+       :desc "Compose new Email" "c" #'mu4e-compose-new))
 
 (require 'org-mime)
 (setq org-mime-export-options '(:section-numbers nil

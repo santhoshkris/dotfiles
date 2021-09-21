@@ -13,7 +13,22 @@
 (global-so-long-mode 1)
 
 ;;(setq doom-theme 'doom-gruvbox)
-(setq doom-theme 'doom-dracula)
+
+(use-package modus-themes
+  :init
+  ;; Add all your customizations prior to loading the themes
+  (setq modus-themes-italic-constructs t
+        modus-themes-bold-constructs nil
+        modus-themes-region '(bg-only no-extend))
+
+  ;; Load the theme files before enabling a theme
+  (modus-themes-load-themes)
+  :config
+  ;; Load the theme of your choice:
+  (modus-themes-load-operandi) ;; OR (modus-themes-load-vivendi)
+  :bind ("<f5>" . modus-themes-toggle))
+
+;;(setq doom-theme 'doom-dracula)
 (when (not (string= platform "TERMUX"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -104,7 +119,7 @@
        :desc "Toggle truncate lines" "t" #'toggle-truncate-lines))
 
 (map! :leader
-      (:prefix ("e". "evaluate/EWW")
+      (:prefix ("e". "evaluate/Email")
        :desc "Evaluate elisp in buffer" "b" #'eval-buffer
        :desc "Evaluate defun" "d" #'eval-defun
        :desc "Evaluate elisp expression" "e" #'eval-expression
@@ -203,7 +218,8 @@
             ;; "BLOG(b)"           ; Blog writing assignments
             ;; "PROJ(p)"           ; A project that contains other tasks
             ;; "VIDEO(v)"          ; Video assignments
-             "WAITING(w)"           ; Something is holding up this task
+             "STARTED(s)"       ; Started working on it
+             "WAITING(w)"          ; Something is holding up this task
              "|"                 ; The pipe necessary to separate "active" states and "inactive" states
              "DONE(d)"           ; Task has been completed
              "CANCELLED(c)" )))) ; Task has been cancelled
@@ -213,8 +229,8 @@
                                  "~/org/gtd/work-cal.org"
                                  "~/org/gtd/personal-cal.org"
                                  "~/org/gtd/anniversaries.org"
-                         "~/org/gtd/gtd.org"
-                         "~/org/gtd/tickler.org"))
+                                 "~/org/gtd/gtd.org"
+                                 "~/org/gtd/tickler.org"))
 
 (use-package org-capture
   :ensure nil
@@ -276,12 +292,12 @@
      ("m" "Mail")
 
      ("mt" "Mail Todo" entry (file+headline "~/org/gtd/inbox.org" "Mail Tasks")
-       "* TODO /Action/ regarding /%:subject/ %a\n\n %i"
+       "* TODO Action - regarding /%:subject/ %a\n\n %i"
        :empty-lines 1
        :immediate-finish t)
 
      ("mf" "Mail Follow Up" entry (file+headline "~/org/gtd/inbox.org" "Mail Tasks")
-       "* TODO /Follow up/ with /%:fromaddress/ regarding /%:subject/ %a\n\n %i"
+       "* TODO Follow up with /%:fromaddress/ regarding /%:subject/ %a\n\n %i"
        :empty-lines 1
        :immediate-finish t)
 
@@ -297,7 +313,7 @@
 	)))
 
 	(setq org-refile-targets '(("~/org/gtd/gtd.org" :maxlevel . 3)
-                           ("~/org/gtd/someday.org" :level . 1)
+                           ("~/org/gtd/someday.org" :maxlevel . 2)
                            ("~/org/gtd/tickler.org" :maxlevel . 2)))
 
         (setq org-agenda-custom-commands
@@ -457,6 +473,10 @@
 ;;                      ("https://www.sciencedaily.com/rss/top.xml" nature topscience)
 ;;                      ("https://www.jetpens.com/blog/feed" stationery jetpens)
 ;;                     )))
+
+(map! :leader
+      (:prefix ("e")
+       :desc "Open Elfeed" "f" #'elfeed))
 
 (map! :map elfeed-search-mode-map
       :after elfeed-search
@@ -936,6 +956,11 @@
   (let ((mu4e-org-link-query-in-headers-mode t))
     (call-interactively 'org-store-link)))
 )
+
+(map! :leader
+      (:prefix ("e")
+       :desc "Open Email" "m" #'mu4e
+       :desc "Compose new Email" "c" #'mu4e-compose-new))
 
 (require 'org-mime)
 (setq org-mime-export-options '(:section-numbers nil

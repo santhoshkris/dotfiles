@@ -68,3 +68,4 @@
 (package! nov)
 (package! smtpmail)
 (package! org-mime)
+(package! modus-themes)
