@@ -12,6 +12,8 @@
 ;; Don't die when handling large, minified files
 (global-so-long-mode 1)
 
+(gcmh-mode 1)
+
 (use-package modus-themes
  :init
  ;; Add all your customizations prior to loading the themes
@@ -341,11 +343,13 @@
 )
 
 (after! org-roam
-(setq org-roam-directory "~/org/roam")
-;;(setq org-roam-dailies-directory "journal/")
+    (setq org-roam-directory "~/org/roam")
+    (setq org-roam-dailies-directory "journal/")
 )
+
 (map! :leader
       :desc "Dailies today" "n r D" #'org-roam-dailies-capture-today)
+
 ;;(setq org-roam-dailies-capture-templates
 ;;      '(("d" "default" entry "* %<%I:%M %p>: %?"
 ;;         :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))

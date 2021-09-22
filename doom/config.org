@@ -59,6 +59,8 @@ My personal Doom Emacs config. Doom Emacs is a distribution of Emacs that uses t
 ;; Don't die when handling large, minified files
 (global-so-long-mode 1)
 
+(gcmh-mode 1)
+
 #+end_src
 * THEME
 Setup a nice theme for DOOM
@@ -505,11 +507,13 @@ Setup the Debug connectors
 * ORG ROAM & DEFT
 #+begin_src emacs-lisp
 (after! org-roam
-(setq org-roam-directory "~/org/roam")
-;;(setq org-roam-dailies-directory "journal/")
+    (setq org-roam-directory "~/org/roam")
+    (setq org-roam-dailies-directory "journal/")
 )
+
 (map! :leader
       :desc "Dailies today" "n r D" #'org-roam-dailies-capture-today)
+
 ;;(setq org-roam-dailies-capture-templates
 ;;      '(("d" "default" entry "* %<%I:%M %p>: %?"
 ;;         :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
