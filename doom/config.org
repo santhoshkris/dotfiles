@@ -522,15 +522,24 @@ Setup the Debug connectors
 			   ))
 
  (setq org-agenda-custom-commands
-       '(("o" "At the office" tags-todo "@office"
+       '(
+        ("a" "My Agenda View"
+         ((agenda 'day)
+          (tags-todo "@office" ((org-agenda-overriding-header "Office Tasks :\n")))
+          (tags-todo "personal" ((org-agenda-overriding-header "Personal Tasks :\n")))
+          (tags-todo "learning" ((org-agenda-overriding-header "Learning :\n")))
+          (tags-todo "book" ((org-agenda-overriding-header "Books :\n")))
+          )
+         )
+        ("o" "At the office" tags-todo "@office"
           ((org-agenda-overriding-header "Office"))
          )
-	 ("b" "All the Books" tags "book"
+	      ("b" "All the Books" tags "book"
           ((org-agenda-files '("~/org/gtd/gtd.org"
                                "~/org/other/books.org")))
 ;;        ((org-agenda-files (file-expand-wildcards "~/org/gtd/*.org")))
           ((org-agenda-overriding-header "Books"))
-	 )
+	        )
 	 ("l" "All the Learning" tags "learning"
           ((org-agenda-files '("~/org/gtd/gtd.org"
                                "~/org/other/learning.org")))
@@ -578,6 +587,18 @@ Setup the Debug connectors
         (search . " %i %e "))))
 (setq org-columns-default-format
       "%75ITEM %TODO %PRIORITY %SCHEDULED %DEADLINE %CLOSED %ALLTAGS")
+
+(setq org-agenda-span 'week) ; default for all agenda commands
+
+(defun my:org-agenda-day ()
+   (interactive)
+   (org-agenda nil "a"))
+
+(setq org-agenda-block-separator 45)
+
+(map! :leader
+      (:prefix ("oa")
+       :desc "Directly Open Agenda" "a" #'my:org-agenda-day))
 )
 
 #+end_src
