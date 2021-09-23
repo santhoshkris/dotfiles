@@ -350,7 +350,7 @@ Setup the Debug connectors
 
 (after! org
   (setq org-startup-folded t
-)
+  )
   (use-package org-superstar  ;; Improved version of org-bullets
   	:config
   (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
@@ -376,21 +376,32 @@ Setup the Debug connectors
         org-todo-keywords        ; This overwrites the default Doom org-todo-keywords
           '((sequence
              "TODO(t)"           ; A task that is ready to be tackled
+             "BOOK(k)"           ; A book to be read
+             "ARTICLE(a)"        ; An article to be read
+             "MOVIE(m)"          ; A movie to watch
+             "TV(v)"             ; A tv series to watch
+             "LEARN(l)"          ; A learning/skill I want to pick up
+             "BLOG(b)"           ; Blog post to work on
+             "YOUTUBE(y)"        ; Youtube video to work on
              "INPROGRESS(p)"     ; a task - in progress
-             "READING(r)"        ; a book - started reading
-             "WATCHING(w)"       ; a movie/tv series - started watching
-             "BLOCKED(b)"        ; Something is holding up this task
+             "READING(e)"        ; a task - in progress
+             "WATCHING(g)"       ; a task - in progress
+             "WAITING(w)"        ; Something is holding up this task
              "|"                 ; The pipe necessary to separate "active" states and "inactive" states
              "DONE(d)"           ; Task has been completed
+             "READ(r)"           ; Book/Article has been read
+             "WATCHED(h)"        ; Movie/TV Series has been watched
              "CANCELLED(c)" )))) ; Task has been cancelled
 
 (after! org
         (setq org-agenda-files '("~/org/gtd/inbox.org"
+                                 "~/org/gtd/gtd.org"
+                                 "~/org/gtd/projects.org"
+                                 "~/org/gtd/tickler.org"
                                  "~/org/gtd/work-cal.org"
                                  "~/org/gtd/personal-cal.org"
                                  "~/org/gtd/anniversaries.org"
-                                 "~/org/gtd/gtd.org"
-                                 "~/org/gtd/tickler.org"))
+                                 ))
 
 (use-package org-capture
   :ensure nil
@@ -416,23 +427,25 @@ Setup the Debug connectors
   :custom
   (org-capture-templates
    `(
-     ;; ("B" "Book" checkitem (file+headline "~/org/other/books.org" "Books")
-     ;;  "- [ ] %^{Book}"
-     ;;  :immediate-finish t)
+     ("t" "Task Items")
 
-     ;; ("L" "Learning" checkitem (file+headline "~/org/other/learning.org" "Things")
-     ;;  "- [ ] %^{Thing}"
-     ;;  :immediate-finish t)
+     ("tt" "Todo [inbox]" entry (file+headline "~/org/gtd/inbox.org" "Tasks")
+       "* TODO %^{TASK} %i%?"
+	:immediate-finish t)
 
-     ;; ("M" "Movie" checkitem (file+headline "~/org/other/movies.org" "Movies")
-     ;;  "- [ ] %^{Movie}"
-     ;;  :immediate-finish t)
+     ("tT" "Tickler" entry (file+headline "~/org/gtd/tickler.org" "Tickler")
+       "* %^{TASK} %%i%? \n %U"
+	:immediate-finish t)
 
-     ;; ("P" "Purchase" checkitem (file+headline "~/org/other/purchases.org" "Purchases")
-     ;;  "- [ ] %^{Item}"
-     ;;  :immediate-finish t)
+     ("tb" "Blog [inbox]" entry (file+headline "~/org/other/blog-and-youtube.org" "Blog")
+       "* BLOG %^{TASK} %i%? :blog:"
+	:immediate-finish t)
 
-     ("l" "Ledger")
+     ("ty" "Youtube [inbox]" entry (file+headline "~/org/other/blog-and-youtube.org" "Youtube")
+       "* YOUTUBE %^{TASK} %i%? :youtube:"
+	:immediate-finish t)
+
+          ("l" "Ledger")
 
      ("li" "Income" plain (file ,(format "~/org/ledger/ledger-%s.dat" (format-time-string "%Y"))),
       my/org-ledger-income-template
@@ -449,6 +462,38 @@ Setup the Debug connectors
       :empty-lines 1
       :immediate-finish t)
 
+      ("b", "Book list")
+
+      ("bb" "General Book" entry (file+headline "~/org/other/books.org" "Books")
+       "* BOOK %^{Book} :book: :general:book:"
+       :immediate-finish t)
+
+      ("bt" "Tech Book" entry (file+headline "~/org/other/books.org" "Tech Books")
+       "* BOOK %^{Book} :book: :tech:book:"
+       :immediate-finish t)
+
+      ("e", "Learning")
+
+      ("eg" "General Learning" entry (file+headline "~/org/other/learning.org" "Learning")
+       "* LEARN %^{Thing} :general:learning:"
+       :immediate-finish t)
+
+      ("et" "Learning" entry (file+headline "~/org/other/learning.org" "Tech Learning")
+       "* LEARN %^{Thing} :tech:learning:"
+       :immediate-finish t)
+
+      ("m" "Movie" entry (file+headline "~/org/other/movies-and-tv.org" "Movies")
+       "* MOVIE %^{Movie} :towatch:movie:"
+       :immediate-finish t)
+
+      ("t" "TV" entry (file+headline "~/org/other/movies-and-tv.org" "Series")
+       "* TV %^{TV Series} :towatch:tv:"
+       :immediate-finish t)
+
+      ("w" "Wish List" checkitem (file+headline "~/org/other/wishlist.org" "WishList")
+       "- [ ] %^{Item} :wishlist:"
+       :immediate-finish t)
+
      ("m" "Mail")
 
      ("mt" "Mail Todo" entry (file+headline "~/org/gtd/inbox.org" "Mail Tasks")
@@ -461,24 +506,57 @@ Setup the Debug connectors
        :empty-lines 1
        :immediate-finish t)
 
-     ("t" "Todo [inbox]" entry (file+headline "~/org/gtd/inbox.org" "Tasks")
-       "* TODO %i%?")
-
-     ("T" "Tickler" entry (file+headline "~/org/gtd/tickler.org" "Tickler")
-       "* %i%? \n %U")
-
    ;;  ("t" "Task" entry (file+headline "~/org/agenda/organizer.org" "Tasks"),
    ;;   my/org-basic-task-template
    ;;   :empty-lines 1)
 	)))
 
-	(setq org-refile-targets '(("~/org/gtd/gtd.org" :maxlevel . 3)
-                           ("~/org/gtd/someday.org" :maxlevel . 2)
-                           ("~/org/gtd/tickler.org" :maxlevel . 2)))
+	(setq org-refile-targets '(
+			   ("~/org/gtd/gtd.org" :maxlevel . 3)
+			   ("~/org/other/books.org" :maxlevel . 1)
+			   ("~/org/other/learning.org" :maxlevel . 1)
+			   ("~/org/other/blog-and-youtube.org" :maxlevel . 1)
+			   ("~/org/other/movies-and-tv.org" :maxlevel . 1)
+        ("~/org/gtd/someday.org" :maxlevel . 2)
+        ("~/org/gtd/tickler.org" :maxlevel . 2)
+			   ))
 
-        (setq org-agenda-custom-commands
-                '(("o" "At the office" tags-todo "@office"
-                ((org-agenda-overriding-header "Office")))))
+ (setq org-agenda-custom-commands
+       '(("o" "At the office" tags-todo "@office"
+          ((org-agenda-overriding-header "Office"))
+         )
+	 ("b" "All the Books" tags "book"
+          ((org-agenda-files '("~/org/gtd/gtd.org"
+                               "~/org/other/books.org")))
+;;        ((org-agenda-files (file-expand-wildcards "~/org/gtd/*.org")))
+          ((org-agenda-overriding-header "Books"))
+	 )
+	 ("l" "All the Learning" tags "learning"
+          ((org-agenda-files '("~/org/gtd/gtd.org"
+                               "~/org/other/learning.org")))
+;;        ((org-agenda-files (file-expand-wildcards "~/org/gtd/*.org")))
+          ((org-agenda-overriding-header "Learning"))
+	 )
+	 ("y" "All Blogging and Youtube" tags "blog|youtube"
+          ((org-agenda-files '("~/org/gtd/gtd.org"
+                               "~/org/other/blog-and-youtube.org")))
+;;        ((org-agenda-files (file-expand-wildcards "~/org/gtd/*.org")))
+          ((org-agenda-overriding-header "Blog&Youtube"))
+	 )
+	 ("m" "All the Movies" tags "movie"
+          ((org-agenda-files '("~/org/gtd/gtd.org"
+                               "~/org/other/movies-and-tv.org")))
+;;        ((org-agenda-files (file-expand-wildcards "~/org/gtd/*.org")))
+          ((org-agenda-overriding-header "Movies"))
+	 )
+	 ("v" "All the TV Series" tags "tv"
+          ((org-agenda-files '("~/org/gtd/gtd.org"
+                               "~/org/other/movies-and-tv.org")))
+;;        ((org-agenda-files (file-expand-wildcards "~/org/gtd/*.org")))
+          ((org-agenda-overriding-header "TV Series"))
+	 )
+	)
+ )
 
 (setq org-agenda-compact-blocks nil)
 (setq org-agenda-restore-windows-after-quit t)
