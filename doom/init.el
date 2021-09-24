@@ -205,7 +205,7 @@
        ;;(wanderlust +gmail)
 
        :app
-       ;;calendar
+       org-super-agenda
        org-gcal
        eaf
        emms

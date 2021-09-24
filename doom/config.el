@@ -274,7 +274,7 @@
 	:immediate-finish t)
 
      ("tT" "Tickler" entry (file+headline "~/org/gtd/tickler.org" "Tickler")
-       "* %^{TASK} %%i%? \n %U"
+       "* %^{TASK} %i%? \n %U"
 	:immediate-finish t)
 
      ("tb" "Blog [inbox]" entry (file+headline "~/org/other/blog-and-youtube.org" "Blog")
@@ -361,51 +361,85 @@
         ("~/org/gtd/tickler.org" :maxlevel . 2)
 			   ))
 
- (setq org-agenda-custom-commands
-       '(
+(setq org-agenda-custom-commands
+    '(
         ("a" "My Agenda View"
-         ((agenda 'day)
-          (tags-todo "@office" ((org-agenda-overriding-header "Office Tasks :\n")))
-          (tags-todo "personal" ((org-agenda-overriding-header "Personal Tasks :\n")))
-          (tags-todo "learning" ((org-agenda-overriding-header "Learning :\n")))
-          (tags-todo "book" ((org-agenda-overriding-header "Books :\n")))
+         (
+          (agenda 'day)
+          (tags "@office+TODO=\"INPROGRESS\""
+                     ((org-agenda-overriding-header "Office Tasks")
+                      (org-agenda-files '("~/org/gtd/gtd.org"
+                                          "~/org/gtd/inbox.org")))
+           )
+          (tags "personal+TODO=\"INPROGRESS\""
+                     ((org-agenda-overriding-header "Personal Tasks")
+                      (org-agenda-files '("~/org/gtd/gtd.org"
+                                          "~/org/gtd/inbox.org")))
+           )
+          (tags "learning+TODO=\"INPROGRESS\""
+                     ((org-agenda-overriding-header "Learning")
+                      (org-agenda-files '("~/org/other/learning.org")))
+           )
+          (tags "book+TODO=\"READING\""
+                     ((org-agenda-overriding-header "Books")
+                      (org-agenda-files '("~/org/other/books.org")))
+           )
           )
          )
         ("o" "At the office" tags-todo "@office"
-          ((org-agenda-overriding-header "Office"))
+         ((org-agenda-overriding-header "Office"))
          )
-	      ("b" "All the Books" tags "book"
-          ((org-agenda-files '("~/org/gtd/gtd.org"
-                               "~/org/other/books.org")))
-;;        ((org-agenda-files (file-expand-wildcards "~/org/gtd/*.org")))
-          ((org-agenda-overriding-header "Books"))
-	        )
-	 ("l" "All the Learning" tags "learning"
-          ((org-agenda-files '("~/org/gtd/gtd.org"
-                               "~/org/other/learning.org")))
-;;        ((org-agenda-files (file-expand-wildcards "~/org/gtd/*.org")))
-          ((org-agenda-overriding-header "Learning"))
-	 )
-	 ("y" "All Blogging and Youtube" tags "blog|youtube"
-          ((org-agenda-files '("~/org/gtd/gtd.org"
-                               "~/org/other/blog-and-youtube.org")))
-;;        ((org-agenda-files (file-expand-wildcards "~/org/gtd/*.org")))
-          ((org-agenda-overriding-header "Blog&Youtube"))
-	 )
-	 ("m" "All the Movies" tags "movie"
-          ((org-agenda-files '("~/org/gtd/gtd.org"
-                               "~/org/other/movies-and-tv.org")))
-;;        ((org-agenda-files (file-expand-wildcards "~/org/gtd/*.org")))
-          ((org-agenda-overriding-header "Movies"))
-	 )
-	 ("v" "All the TV Series" tags "tv"
-          ((org-agenda-files '("~/org/gtd/gtd.org"
-                               "~/org/other/movies-and-tv.org")))
-;;        ((org-agenda-files (file-expand-wildcards "~/org/gtd/*.org")))
-          ((org-agenda-overriding-header "TV Series"))
-	 )
+        ("p" "Personal" tags-todo "personal"
+         ((org-agenda-overriding-header "Personal"))
+         )
+        ("b" "Books" tags-todo "book"
+         ((org-agenda-overriding-header "Books")
+          (org-agenda-files '("~/org/other/books.org")))
+         )
+        ("l" "Learning" tags-todo "learning"
+         ((org-agenda-overriding-header "Learning")
+          (org-agenda-files '("~/org/other/learning.org")))
+         )
+        ("y" "Blog & Youtube" tags-todo "blog|youtube"
+         ((org-agenda-overriding-header "Blog & Youtube")
+          (org-agenda-files '("~/org/other/blog-and-youtube.org")))
+         )
+        ("i" "Movies" tags-todo "movie"
+         ((org-agenda-overriding-header "Movies")
+          (org-agenda-files '("~/org/other/movies-and-tv.org")))
+         )
+        ("v" "On TV" tags-todo "tv"
+         ((org-agenda-overriding-header "On TV")
+          (org-agenda-files '("~/org/other/movies-and-tv.org")))
+         )
+        ("O" "All things office" tags "@office"
+         ((org-agenda-overriding-header "Office"))
+         )
+        ("P" "All things Personal" tags "personal"
+         ((org-agenda-overriding-header "Personal"))
+         )
+        ("B" "All Books" tags "book"
+         ((org-agenda-overriding-header "Books")
+          (org-agenda-files '("~/org/other/books.org")))
+         )
+        ("L" "All things Learning" tags "learning"
+         ((org-agenda-overriding-header "Learning")
+          (org-agenda-files '("~/org/other/learning.org")))
+         )
+        ("Y" "All Blog & Youtube" tags "blog|youtube"
+         ((org-agenda-overriding-header "Blog & Youtube")
+          (org-agenda-files '("~/org/other/blog-and-youtube.org")))
+         )
+        ("I" "All Movies" tags "movie"
+         ((org-agenda-overriding-header "Movies")
+          (org-agenda-files '("~/org/other/movies-and-tv.org")))
+         )
+        ("V" "All things On TV" tags "tv"
+         ((org-agenda-overriding-header "On TV")
+          (org-agenda-files '("~/org/other/movies-and-tv.org")))
+         )
 	)
- )
+)
 
 (setq org-agenda-compact-blocks nil)
 (setq org-agenda-restore-windows-after-quit t)
