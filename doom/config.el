@@ -1108,9 +1108,10 @@
 
 (map! :leader
       (:prefix ("k" . "open file")
-       :desc "Edit doom config.org" "c" #'(lambda () (interactive) (find-file "~/dotfiles/doom/config.org"))
-       :desc "Edit doom init.el" "i" #'(lambda () (interactive) (find-file "~/dotfiles/doom/init.el"))
-       :desc "Edit doom packages.el" "p" #'(lambda () (interactive) (find-file "~/dotfiles/doom/packages.el"))))
+       :desc "Open Ledger file" "l" #'(lambda () (interactive) (find-file "~/org/ledger/ledger-2021.dat"))
+       :desc "Open doom config.org" "c" #'(lambda () (interactive) (find-file "~/dotfiles/doom/config.org"))
+       :desc "Open doom init.el" "i" #'(lambda () (interactive) (find-file "~/dotfiles/doom/init.el"))
+       :desc "Open doom packages.el" "p" #'(lambda () (interactive) (find-file "~/dotfiles/doom/packages.el"))))
 
 ;;going with the 'medium' to begin with
 (setq sudoku-level 'medium)
