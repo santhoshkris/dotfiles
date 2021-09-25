@@ -274,14 +274,14 @@
 	:immediate-finish t)
 
      ("tT" "Tickler" entry (file+headline "~/org/gtd/tickler.org" "Tickler")
-       "* %^{TASK} %i%? \n %U"
+       "* INPROGRESS %^{TASK} %i%? \n %U"
 	:immediate-finish t)
 
-     ("tb" "Blog [inbox]" entry (file+headline "~/org/other/blog-and-youtube.org" "Blog")
+     ("tb" "Blog" entry (file+headline "~/org/other/blog-and-youtube.org" "Blog")
        "* BLOG %^{TASK} %i%? :blog:"
 	:immediate-finish t)
 
-     ("ty" "Youtube [inbox]" entry (file+headline "~/org/other/blog-and-youtube.org" "Youtube")
+     ("ty" "Youtube" entry (file+headline "~/org/other/blog-and-youtube.org" "Youtube")
        "* YOUTUBE %^{TASK} %i%? :youtube:"
 	:immediate-finish t)
 
@@ -302,7 +302,7 @@
       :empty-lines 1
       :immediate-finish t)
 
-      ("b", "Book list")
+      ("b", "Books")
 
       ("bb" "General Book" entry (file+headline "~/org/other/books.org" "Books")
        "* BOOK %^{Book} :book: :general:book:"
@@ -315,14 +315,14 @@
       ("e", "Learning")
 
       ("eg" "General Learning" entry (file+headline "~/org/other/learning.org" "Learning")
-       "* LEARN %^{Thing} :general:learning:"
+       "* LEARN %^{Topic} :general:learning:"
        :immediate-finish t)
 
       ("et" "Learning" entry (file+headline "~/org/other/learning.org" "Tech Learning")
-       "* LEARN %^{Thing} :tech:learning:"
+       "* LEARN %^{Topic} :tech:learning:"
        :immediate-finish t)
 
-      ("m" "Movie" entry (file+headline "~/org/other/movies-and-tv.org" "Movies")
+      ("o" "Movie" entry (file+headline "~/org/other/movies-and-tv.org" "Movies")
        "* MOVIE %^{Movie} :towatch:movie:"
        :immediate-finish t)
 
@@ -1105,6 +1105,12 @@
 
 (use-package emojify
   :hook (after-init . global-emojify-mode))
+
+(map! :leader
+      (:prefix ("k" . "open file")
+       :desc "Edit doom config.org" "c" #'(lambda () (interactive) (find-file "~/dotfiles/doom/config.org"))
+       :desc "Edit doom init.el" "i" #'(lambda () (interactive) (find-file "~/dotfiles/doom/init.el"))
+       :desc "Edit doom packages.el" "p" #'(lambda () (interactive) (find-file "~/dotfiles/doom/packages.el"))))
 
 ;;going with the 'medium' to begin with
 (setq sudoku-level 'medium)
