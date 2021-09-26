@@ -17,16 +17,17 @@
 (use-package modus-themes
  :init
  ;; Add all your customizations prior to loading the themes
- (setq modus-themes-italic-constructs t
-      modus-themes-bold-constructs nil
-      modus-themes-region '(bg-only no-extend))
+  (setq modus-themes-italic-constructs t
+       modus-themes-bold-constructs nil
+       modus-themes-region '(bg-only no-extend))
 
  ;; Load the theme files before enabling a theme
  (modus-themes-load-themes)
  :config
  ;; Load the theme of your choice:
  (modus-themes-load-operandi) ;; OR (modus-themes-load-vivendi)
- :bind ("<f5>" . modus-themes-toggle))
+ :bind ("<f5>" . modus-themes-toggle)
+ )
 
 ;;(setq doom-theme 'doom-dracula)
 
@@ -145,7 +146,12 @@
 (use-package lsp-mode
   :bind (:map lsp-mode-map
          ("TAB" . completion-at-point))
-  :custom (lsp-headerline-breadcrumb-enable nil))
+  :custom (
+           (lsp-headerline-breadcrumb-enable nil)
+           (lsp-ui-sideline-mode nil)
+          )
+  )
+(setq lsp-ui-sideline-enable nil)
 )
 
 (when (not (string= platform "TERMUX"))
