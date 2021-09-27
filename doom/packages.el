@@ -69,4 +69,3 @@
 (package! smtpmail)
 (package! org-mime)
 (package! modus-themes)
-(package! org-super-agenda)
