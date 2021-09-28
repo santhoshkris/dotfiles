@@ -14,7 +14,7 @@
 
 ;;(gcmh-mode 1)
 
- ;; (use-package modus-themes
+;; (use-package modus-themes
  ;; :init
  ;; ;; Add all your customizations prior to loading the themes
  ;;  (setq modus-themes-italic-constructs t
@@ -326,7 +326,7 @@
        "* LEARN %^{Topic} :general:learning:"
        :immediate-finish t)
 
-      ("et" "Learning" entry (file+headline "~/org/other/learning.org" "Tech Learning")
+      ("et" "Tech Learning" entry (file+headline "~/org/other/learning.org" "Tech Learning")
        "* LEARN %^{Topic} :tech:learning:"
        :immediate-finish t)
 

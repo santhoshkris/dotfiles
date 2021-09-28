@@ -3,10 +3,12 @@
 
 # Path to your oh-my-zsh installation.
 export ZSH="/Users/santhosh.k/.oh-my-zsh"
+export GOROOT="/usr/local/go"
+export GOPATH="/Users/santhosh.k/go:/Users/santhosh.k/projects/go-stuff"
 export PATH=/usr/local/bin:$PATH:/usr/local/mysql/bin:/Applications/Postgres.app/Contents/Versions/13/bin/
 export PATH="/usr/local/opt/php@7.4/bin:$PATH"
 export PATH="/usr/local/opt/php@7.4/sbin:$PATH"
-export GOPATH=~/go/lib
+export PATH=$GOROOT/bin:~/go/bin:"/usr/local/opt/php@7.4/sbin:$PATH"
 export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
 # Set name of the theme to load --- if set to "random", it will

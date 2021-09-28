@@ -487,7 +487,7 @@ Setup the Debug connectors
        "* LEARN %^{Topic} :general:learning:"
        :immediate-finish t)
 
-      ("et" "Learning" entry (file+headline "~/org/other/learning.org" "Tech Learning")
+      ("et" "Tech Learning" entry (file+headline "~/org/other/learning.org" "Tech Learning")
        "* LEARN %^{Topic} :tech:learning:"
        :immediate-finish t)
 
