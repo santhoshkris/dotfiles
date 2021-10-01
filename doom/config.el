@@ -29,9 +29,11 @@
  ;; (modus-themes-load-vivendi)
  ;; :bind ("<f5>" . modus-themes-toggle)
  ;; )
-(modus-themes-load-operandi)
+;;(modus-themes-load-operandi)
 ;;(modus-themes-load-vivendi)
+
 ;;(setq doom-theme 'doom-dracula)
+(setq doom-theme 'modus-operandi)
 
 (when (not (string= platform "TERMUX"))
 (custom-set-faces
@@ -154,6 +156,8 @@
           )
   )
 (setq lsp-ui-sideline-enable nil)
+(require 'gradle-mode)
+(add-hook 'java-mode-hook '(lambda() (gradle-mode 1)))
 )
 
 (when (not (string= platform "TERMUX"))
@@ -281,7 +285,7 @@
        "* TODO %^{TASK} %i%?"
 	:immediate-finish t)
 
-     ("tT" "Tickler" entry (file+headline "~/org/gtd/tickler.org" "Tickler")
+     ("tT" "Tickler" entry (file+headline "~/org/gtd/gtd.org" "Tickler")
        "* INPROGRESS %^{TASK} %i%? \n %U"
 	:immediate-finish t)
 
@@ -1221,5 +1225,8 @@
       (:prefix ("t" . "Yoda - Global Zen Mode")
        :desc "Yoda - Global Zen Mode" "y" #'global-writeroom-mode
        ))
+
+(map! :leader
+      :desc "Search this buffer" "s b" #'consult-line)
 
 (setq confirm-kill-processes nil)
