@@ -70,3 +70,4 @@
 (package! org-mime)
 (package! modus-themes)
 (package! gradle-mode)
+(package! pacmacs)

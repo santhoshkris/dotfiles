@@ -14,7 +14,7 @@
 
 ;;(gcmh-mode 1)
 
-;; (use-package modus-themes
+ ;; (use-package modus-themes
  ;; :init
  ;; ;; Add all your customizations prior to loading the themes
  ;;  (setq modus-themes-italic-constructs t
@@ -61,6 +61,20 @@
 
 ;; Set up the visible bell
 (setq visible-bell t)
+
+;; Vertical Scroll
+(setq scroll-step 1)
+(setq scroll-margin 1)
+(setq scroll-conservatively 101)
+(setq scroll-up-aggressively 0.01)
+(setq scroll-down-aggressively 0.01)
+(setq auto-window-vscroll nil)
+(setq fast-but-imprecise-scrolling nil)
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+(setq mouse-wheel-progressive-speed nil)
+;; Horizontal Scroll
+(setq hscroll-step 1)
+(setq hscroll-margin 1)
 
 (evil-define-minor-mode-key '(normal motion) 'evil-snipe-local-mode
   "s" #'avy-goto-char
@@ -147,18 +161,70 @@
        :desc "Point to register" "SPC" #'point-to-register))
 
 (when (not (string= platform "TERMUX"))
+(after! lsp-mode
 (use-package lsp-mode
-  :bind (:map lsp-mode-map
-         ("TAB" . completion-at-point))
-  :custom (
-           (lsp-headerline-breadcrumb-enable nil)
-           (lsp-ui-sideline-mode nil)
-          )
-  )
+  :defer t
+  :commands lsp
+  :custom
+  (lsp-keymap-prefix "C-x l")
+  (lsp-auto-guess-root nil)
+  (lsp-prefer-flymake nil) ;; Use flycheck instead of flymake
+  (lsp-enable-file-watchers nil)
+  (lsp-enable-folding nil)
+  (read-process-output-max (* 1024 1024))
+  (lsp-keep-workspace-alive nil)
+  (lsp-eldoc-hook nil)
+  :bind (:map lsp-mode-map ("C-c C-f" . lsp-format-buffer))
+  :hook ((java-mode python-mode go-mode rust-mode
+          js-mode js2-mode typescript-mode web-mode
+          c-mode c++-mode objc-mode) . lsp-deferred)
+  :config
+  (defun lsp-update-server ()
+    "Update LSP server."
+    (interactive)
+    ;; Equals to `C-u M-x lsp-install-server'
+    (lsp-install-server t)))
+
 (setq lsp-ui-sideline-enable nil)
 (require 'gradle-mode)
 (add-hook 'java-mode-hook '(lambda() (gradle-mode 1)))
-)
+
+;;LSP UI
+
+(use-package lsp-ui
+  :after lsp-mode
+  :diminish
+  :commands lsp-ui-mode
+  :custom-face
+  (lsp-ui-doc-background ((t (:background nil))))
+  (lsp-ui-doc-header ((t (:inherit (font-lock-string-face italic)))))
+  :bind
+  (:map lsp-ui-mode-map
+        ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
+        ([remap xref-find-references] . lsp-ui-peek-find-references)
+        ("C-c u" . lsp-ui-imenu)
+        ("M-i" . lsp-ui-doc-focus-frame))
+  (:map lsp-mode-map
+        ("M-n" . forward-paragraph)
+        ("M-p" . backward-paragraph))
+  :custom
+  (lsp-ui-doc-header t)
+  (lsp-ui-doc-include-signature t)
+  (lsp-ui-doc-border (face-foreground 'default))
+  (lsp-ui-sideline-enable nil)
+  (lsp-ui-sideline-ignore-duplicate t)
+  (lsp-ui-sideline-show-code-actions nil)
+  :config
+  ;; Use lsp-ui-doc-webkit only in GUI
+  (when (display-graphic-p)
+    (setq lsp-ui-doc-use-webkit t))
+  ;; WORKAROUND Hide mode-line of the lsp-ui-imenu buffer
+  ;; https://github.com/emacs-lsp/lsp-ui/issues/243
+  (defadvice lsp-ui-imenu (after hide-lsp-ui-imenu-mode-line activate)
+    (setq mode-line-format nil))
+  ;; `C-g'to close doc
+  (advice-add #'keyboard-quit :before #'lsp-ui-doc-hide))
+))
 
 (when (not (string= platform "TERMUX"))
 (after! lsp-mode 
@@ -171,6 +237,19 @@
 
 (when (not (string= platform "TERMUX"))
   (require 'dap-php)
+)
+
+(when (not (string= platform "TERMUX"))
+  (after! company
+    (setq company-minimum-prefix-length 3)
+    (setq company-tooltip-align-annotations t)
+    (setq company-require-match 'never)
+    (setq company-idle-delay 0.3)
+    (setq company-show-numbers t)
+  )
+)
+
+(when (not (string= platform "TERMUX"))
 )
 
 (add-hook 'dired-mode-hook 'org-download-enable)
@@ -265,16 +344,16 @@
   ;;	Captured %<%Y-%m-%d %H:%M>" "Template for basic task.")
 
   (defvar my/org-ledger-income-template "%(org-read-date) %^{Payee}
-  Income:%^{Account}  ₹%^{Amount}
-  Assets:Bank:Checking" "Template for income with ledger.")
+  Income:%^{Account}  ₹-%^{Amount}
+  Assets:Savings:Kotak" "Template for income with ledger.")
 
   (defvar my/org-ledger-card-template "%(org-read-date) %^{Payee}
-  Expenses:%^{Account}    ₹%^{Amount}
+  Expenses:%^{Account}  ₹%^{Amount}
   Liabilities:CC:Manhattan" "Template for credit card transaction with ledger.")
 
   (defvar my/org-ledger-cash-template "%(org-read-date) * %^{Payee}
   Expenses:%^{Account}  ₹%^{Amount}
-  Assets:Bank:Checking" "Template for cash transaction with ledger.")
+  Assets:Savings:Kotak" "Template for cash transaction with ledger.")
 
   :custom
   (org-capture-templates
