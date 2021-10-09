@@ -21,8 +21,8 @@
 
        :completion
        (company
-        +auto
-        +childframe)       ; the ultimate code completion backend
+	 +auto
+	 +childframe)      ; the ultimate code completion backend
        ;;helm              ; the *other* search engine for love and life
        ;ido               ; the other *other* search engine...
        (ivy 
@@ -50,7 +50,7 @@
 	 +all 
 	 +defaults)   ; tame sudden yet inevitable temporary windows
        ;;tabs              ; a tab bar for Emacs
-       ;;treemacs          ; a project drawer, like neotree but cooler
+       (treemacs  +lsp)         ; a project drawer, like neotree but cooler
        ;;unicode           ; extended unicode support for various languages
        vc-gutter         ; vcs diff in the fringe
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
@@ -75,7 +75,8 @@
        word-wrap         ; soft wrapping with language-aware indent
 
        :emacs
-       (dired 
+       (dired
+        +ranger
 	+icons)     	 ; making dired pretty [functional]
        electric          ; smarter, keyword-based electric-indent
        ;;ibuffer         ; interactive buffer management
@@ -152,7 +153,8 @@
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ; a language you can depend on
        (json +lsp)             ; At least it ain't XML
-       (java +lsp)	   ; the poster child for carpal tunnel syndrome
+       (java 
+	 +lsp)	   ; the poster child for carpal tunnel syndrome
        (gradle-mode)
        (javascript +lsp)        ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
@@ -174,6 +176,7 @@
 	+present)          ; organize your plain life in plain text
        (org-superstar)
        (php 
+	 +hack
 	 +lsp
 	 +dap-mode)             ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
