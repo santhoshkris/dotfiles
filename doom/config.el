@@ -296,11 +296,13 @@
   :bind
   (("M-0"       . treemacs-select-window)
    ("C-x t 1"   . treemacs-delete-other-windows)
-   ("C-x t t"   . treemacs)
    ("C-x t B"   . treemacs-bookmark)
    ("C-x t C-t" . treemacs-find-file)
    ("C-x t M-t" . treemacs-find-tag))
   (:map treemacs-mode-map ("C-p" . treemacs-previous-line)))
+  (map! :leader
+      (:prefix ("f" . "file")
+        :desc "Open Treemacs" "t" #'+treemacs/toggle))
 )
 
 (add-hook 'dired-mode-hook 'org-download-enable)
@@ -1351,13 +1353,17 @@
 
 (enable_word_wrap)
 
+(setq confirm-kill-processes nil)
+(setq frame-resize-pixelwise t)
+
 (map! :leader
       (:prefix ("t" . "Yoda - Global Zen Mode")
        :desc "Yoda - Global Zen Mode" "y" #'global-writeroom-mode
-       ))
+       )
+      (:desc "Search this buffer" "s b" #'consult-line)
+      (:desc "Recent files" "f r" #'counsel-recentf)
+      (:desc "Switch to buffer" "b i" #'counsel-switch-buffer)
+)
 
-(map! :leader
-      :desc "Search this buffer" "s b" #'consult-line)
-
-(setq confirm-kill-processes nil)
-(setq frame-resize-pixelwise t)
+;;(map! :leader
+;;      :desc "Search this buffer" "s b" #'consult-line)
