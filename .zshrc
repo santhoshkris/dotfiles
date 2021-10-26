@@ -11,7 +11,7 @@ export PATH="/usr/local/opt/php@7.4/sbin:$PATH"
 export PATH=$GOROOT/bin:~/go/bin:"/usr/local/opt/php@7.4/sbin:$PATH"
 export PATH="/usr/local/sbin:$PATH"
 export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk-16.0.2.jdk/Contents/Home"
-export HOMEBREW_GITHUB_API_TOKEN=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
+export HOMEBREW_GITHUB_API_TOKEN=
 export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
 # Set name of the theme to load --- if set to "random", it will
