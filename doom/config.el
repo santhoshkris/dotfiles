@@ -14,7 +14,7 @@
 
 ;;(gcmh-mode 1)
 
- ;; (use-package modus-themes
+;; (use-package modus-themes
  ;; :init
  ;; ;; Add all your customizations prior to loading the themes
  ;;  (setq modus-themes-italic-constructs t
@@ -607,6 +607,10 @@
                      ((org-agenda-overriding-header "Personal Tasks")
                       (org-agenda-files '("~/org/gtd/gtd.org"
                                           "~/org/gtd/inbox.org")))
+           )
+          (tags "blog+TODO=\"INPROGRESS\""
+                     ((org-agenda-overriding-header "Blog & Youtube")
+                      (org-agenda-files '("~/org/other/blog-and-youtube.org")))
            )
           (tags "learning+TODO=\"INPROGRESS\""
                      ((org-agenda-overriding-header "Learning")

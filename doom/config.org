@@ -802,6 +802,10 @@ Treemacs setup - a tree layout file explorer.
                       (org-agenda-files '("~/org/gtd/gtd.org"
                                           "~/org/gtd/inbox.org")))
            )
+          (tags "blog+TODO=\"INPROGRESS\""
+                     ((org-agenda-overriding-header "Blog & Youtube")
+                      (org-agenda-files '("~/org/other/blog-and-youtube.org")))
+           )
           (tags "learning+TODO=\"INPROGRESS\""
                      ((org-agenda-overriding-header "Learning")
                       (org-agenda-files '("~/org/other/learning.org")))
