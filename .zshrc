@@ -14,6 +14,8 @@ export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk-16.0.2.jdk/Contents/Home
 export HOMEBREW_GITHUB_API_TOKEN=
 export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
+export DOTNET_ROOT=/usr/local/dotnet
+export PATH=$PATH:$DOTNET_ROOT
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
