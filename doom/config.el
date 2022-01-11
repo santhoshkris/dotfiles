@@ -1443,7 +1443,7 @@
   (+global-word-wrap-mode +1)
   )
 
-(enable_word_wrap)
+;;(enable_word_wrap)
 
 (setq confirm-kill-processes nil)
 (setq frame-resize-pixelwise t)
