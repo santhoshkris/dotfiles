@@ -14,6 +14,7 @@
 - [[#ivy][IVY]]
   - [[#ivy-posframe][IVY-POSFRAME]]
   - [[#ivy-keybindings][IVY KEYBINDINGS]]
+  - [[#ivy-rich-icons][IVY RICH ICONS]]
 - [[#line-settings][LINE SETTINGS]]
 - [[#evaluate-elisp-expressions][EVALUATE ELISP EXPRESSIONS]]
 - [[#registers][REGISTERS]]
@@ -276,6 +277,12 @@ Setup some useful EVIL mode bindings
 ;; Focus new window after splitting
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
+(defun san/save-and-kill-this-buffer ()
+    (interactive)
+    (save-buffer)
+    (kill-this-buffer))
+(evil-ex-define-cmd "q" #'kill-this-buffer)
+(evil-ex-define-cmd "wq" #'san/save-and-kill-this-buffer)
 
 #+end_src
 
@@ -325,6 +332,25 @@ By default, Doom Emacs does not use 'SPC v', so the format I use for these bindi
       (:prefix ("v" . "Ivy")
        :desc "Ivy push view" "v p" #'ivy-push-view
        :desc "Ivy switch view" "v s" #'ivy-switch-view))
+#+END_SRC
+** IVY RICH ICONS
+
+#+BEGIN_SRC emacs-lisp
+(use-package all-the-icons
+  :if (display-graphic-p)
+  :config
+  (setq all-the-icons-scale-factor 0.8))
+
+(use-package all-the-icons-ivy-rich
+  :after counsel-projectile
+  :init (all-the-icons-ivy-rich-mode +1)
+  :config
+  (setq all-the-icons-ivy-rich-icon-size 0.8))
+
+(use-package ivy-rich
+  :after all-the-icons-ivy-rich
+  :init (ivy-rich-mode +1))
+
 #+END_SRC
 
 * LINE SETTINGS
@@ -660,13 +686,13 @@ Treemacs setup - a tree layout file explorer.
              "CANCELLED(c)" )))) ; Task has been cancelled
 
 (after! org
-        (setq org-agenda-files '("~/org/gtd/inbox.org"
-                                 "~/org/gtd/gtd.org"
-                                 "~/org/gtd/projects.org"
-                                 "~/org/gtd/tickler.org"
-                                 "~/org/gtd/work-cal.org"
-                                 "~/org/gtd/personal-cal.org"
-                                 "~/org/gtd/anniversaries.org"
+        (setq org-agenda-files '("~/org/listibles/inbox.org"
+                                 "~/org/listibles/gtd.org"
+                                 "~/org/listibles/projects.org"
+                                 "~/org/listibles/tickler.org"
+                                 "~/org/listibles/work-cal.org"
+                                 "~/org/listibles/personal-cal.org"
+                                 "~/org/listibles/anniversaries.org"
                                  ))
 
 (use-package org-capture
@@ -695,19 +721,19 @@ Treemacs setup - a tree layout file explorer.
    `(
      ("t" "Task Items")
 
-     ("tt" "Todo [inbox]" entry (file+headline "~/org/gtd/inbox.org" "Tasks")
+     ("tt" "Todo [inbox]" entry (file+headline "~/org/listibles/inbox.org" "Tasks")
        "* TODO %^{TASK} %i%?"
 	:immediate-finish t)
 
-     ("tT" "Tickler" entry (file+headline "~/org/gtd/gtd.org" "Tickler")
+     ("tT" "Tickler" entry (file+headline "~/org/listibles/gtd.org" "Tickler")
        "* INPROGRESS %^{TASK} %i%? \n %U"
 	:immediate-finish t)
 
-     ("tb" "Blog" entry (file+headline "~/org/other/blog-and-youtube.org" "Blog")
+     ("tb" "Blog" entry (file+headline "~/org/listibles/blog-and-youtube.org" "Blog")
        "* BLOG %^{TASK} %i%? :blog:"
 	:immediate-finish t)
 
-     ("ty" "Youtube" entry (file+headline "~/org/other/blog-and-youtube.org" "Youtube")
+     ("ty" "Youtube" entry (file+headline "~/org/listibles/blog-and-youtube.org" "Youtube")
        "* YOUTUBE %^{TASK} %i%? :youtube:"
 	:immediate-finish t)
 
@@ -730,44 +756,44 @@ Treemacs setup - a tree layout file explorer.
 
       ("b", "Books")
 
-      ("bb" "General Book" entry (file+headline "~/org/other/books.org" "Books")
+      ("bb" "General Book" entry (file+headline "~/org/listibles/books.org" "Books")
        "* BOOK %^{Book} :book: :general:book:"
        :immediate-finish t)
 
-      ("bt" "Tech Book" entry (file+headline "~/org/other/books.org" "Tech Books")
+      ("bt" "Tech Book" entry (file+headline "~/org/listibles/books.org" "Tech Books")
        "* BOOK %^{Book} :book: :tech:book:"
        :immediate-finish t)
 
       ("e", "Learning")
 
-      ("eg" "General Learning" entry (file+headline "~/org/other/learning.org" "Learning")
+      ("eg" "General Learning" entry (file+headline "~/org/listibles/learning.org" "Learning")
        "* LEARN %^{Topic} :general:learning:"
        :immediate-finish t)
 
-      ("et" "Tech Learning" entry (file+headline "~/org/other/learning.org" "Tech Learning")
+      ("et" "Tech Learning" entry (file+headline "~/org/listibles/learning.org" "Tech Learning")
        "* LEARN %^{Topic} :tech:learning:"
        :immediate-finish t)
 
-      ("o" "Movie" entry (file+headline "~/org/other/movies-and-tv.org" "Movies")
+      ("o" "Movie" entry (file+headline "~/org/listibles/movies-and-tv.org" "Movies")
        "* MOVIE %^{Movie} :towatch:movie:"
        :immediate-finish t)
 
-      ("t" "TV" entry (file+headline "~/org/other/movies-and-tv.org" "Series")
+      ("t" "TV" entry (file+headline "~/org/listibles/movies-and-tv.org" "Series")
        "* TV %^{TV Series} :towatch:tv:"
        :immediate-finish t)
 
-      ("w" "Wish List" checkitem (file+headline "~/org/other/wishlist.org" "WishList")
+      ("w" "Wish List" checkitem (file+headline "~/org/listibles/wishlist.org" "WishList")
        "- [ ] %^{Item} :wishlist:"
        :immediate-finish t)
 
      ("m" "Mail")
 
-     ("mt" "Mail Todo" entry (file+headline "~/org/gtd/inbox.org" "Mail Tasks")
+     ("mt" "Mail Todo" entry (file+headline "~/org/listibles/inbox.org" "Mail Tasks")
        "* TODO Action - regarding /%:subject/ %a\n\n %i"
        :empty-lines 1
        :immediate-finish t)
 
-     ("mf" "Mail Follow Up" entry (file+headline "~/org/gtd/inbox.org" "Mail Tasks")
+     ("mf" "Mail Follow Up" entry (file+headline "~/org/listibles/inbox.org" "Mail Tasks")
        "* TODO Follow up with /%:fromaddress/ regarding /%:subject/ %a\n\n %i"
        :empty-lines 1
        :immediate-finish t)
@@ -778,13 +804,13 @@ Treemacs setup - a tree layout file explorer.
 	)))
 
 	(setq org-refile-targets '(
-			   ("~/org/gtd/gtd.org" :maxlevel . 3)
-			   ("~/org/other/books.org" :maxlevel . 1)
-			   ("~/org/other/learning.org" :maxlevel . 1)
-			   ("~/org/other/blog-and-youtube.org" :maxlevel . 1)
-			   ("~/org/other/movies-and-tv.org" :maxlevel . 1)
-        ("~/org/gtd/someday.org" :maxlevel . 2)
-        ("~/org/gtd/tickler.org" :maxlevel . 2)
+			   ("~/org/listibles/gtd.org" :maxlevel . 3)
+			   ("~/org/listibles/books.org" :maxlevel . 1)
+			   ("~/org/listibles/learning.org" :maxlevel . 1)
+			   ("~/org/listibles/blog-and-youtube.org" :maxlevel . 1)
+			   ("~/org/listibles/movies-and-tv.org" :maxlevel . 1)
+        ("~/org/listibles/someday.org" :maxlevel . 2)
+        ("~/org/listibles/tickler.org" :maxlevel . 2)
 			   ))
 
 (setq org-agenda-custom-commands
@@ -794,25 +820,25 @@ Treemacs setup - a tree layout file explorer.
           (agenda 'day)
           (tags "@office+TODO=\"INPROGRESS\""
                      ((org-agenda-overriding-header "Office Tasks")
-                      (org-agenda-files '("~/org/gtd/gtd.org"
-                                          "~/org/gtd/inbox.org")))
+                      (org-agenda-files '("~/org/listibles/gtd.org"
+                                          "~/org/listibles/inbox.org")))
            )
           (tags "personal+TODO=\"INPROGRESS\""
                      ((org-agenda-overriding-header "Personal Tasks")
-                      (org-agenda-files '("~/org/gtd/gtd.org"
-                                          "~/org/gtd/inbox.org")))
+                      (org-agenda-files '("~/org/listibles/gtd.org"
+                                          "~/org/listibles/inbox.org")))
            )
           (tags "blog+TODO=\"INPROGRESS\""
                      ((org-agenda-overriding-header "Blog & Youtube")
-                      (org-agenda-files '("~/org/other/blog-and-youtube.org")))
+                      (org-agenda-files '("~/org/listibles/blog-and-youtube.org")))
            )
           (tags "learning+TODO=\"INPROGRESS\""
                      ((org-agenda-overriding-header "Learning")
-                      (org-agenda-files '("~/org/other/learning.org")))
+                      (org-agenda-files '("~/org/listibles/learning.org")))
            )
           (tags "book+TODO=\"READING\""
                      ((org-agenda-overriding-header "Books")
-                      (org-agenda-files '("~/org/other/books.org")))
+                      (org-agenda-files '("~/org/listibles/books.org")))
            )
           )
          )
@@ -824,23 +850,23 @@ Treemacs setup - a tree layout file explorer.
          )
         ("b" "Books" tags-todo "book"
          ((org-agenda-overriding-header "Books")
-          (org-agenda-files '("~/org/other/books.org")))
+          (org-agenda-files '("~/org/listibles/books.org")))
          )
         ("l" "Learning" tags-todo "learning"
          ((org-agenda-overriding-header "Learning")
-          (org-agenda-files '("~/org/other/learning.org")))
+          (org-agenda-files '("~/org/listibles/learning.org")))
          )
         ("y" "Blog & Youtube" tags-todo "blog|youtube"
          ((org-agenda-overriding-header "Blog & Youtube")
-          (org-agenda-files '("~/org/other/blog-and-youtube.org")))
+          (org-agenda-files '("~/org/listibles/blog-and-youtube.org")))
          )
         ("i" "Movies" tags-todo "movie"
          ((org-agenda-overriding-header "Movies")
-          (org-agenda-files '("~/org/other/movies-and-tv.org")))
+          (org-agenda-files '("~/org/listibles/movies-and-tv.org")))
          )
         ("v" "On TV" tags-todo "tv"
          ((org-agenda-overriding-header "On TV")
-          (org-agenda-files '("~/org/other/movies-and-tv.org")))
+          (org-agenda-files '("~/org/listibles/movies-and-tv.org")))
          )
         ("O" "All things office" tags "@office"
          ((org-agenda-overriding-header "Office"))
@@ -850,23 +876,23 @@ Treemacs setup - a tree layout file explorer.
          )
         ("B" "All Books" tags "book"
          ((org-agenda-overriding-header "Books")
-          (org-agenda-files '("~/org/other/books.org")))
+          (org-agenda-files '("~/org/listibles/books.org")))
          )
         ("L" "All things Learning" tags "learning"
          ((org-agenda-overriding-header "Learning")
-          (org-agenda-files '("~/org/other/learning.org")))
+          (org-agenda-files '("~/org/listibles/learning.org")))
          )
         ("Y" "All Blog & Youtube" tags "blog|youtube"
          ((org-agenda-overriding-header "Blog & Youtube")
-          (org-agenda-files '("~/org/other/blog-and-youtube.org")))
+          (org-agenda-files '("~/org/listibles/blog-and-youtube.org")))
          )
         ("I" "All Movies" tags "movie"
          ((org-agenda-overriding-header "Movies")
-          (org-agenda-files '("~/org/other/movies-and-tv.org")))
+          (org-agenda-files '("~/org/listibles/movies-and-tv.org")))
          )
         ("V" "All things On TV" tags "tv"
          ((org-agenda-overriding-header "On TV")
-          (org-agenda-files '("~/org/other/movies-and-tv.org")))
+          (org-agenda-files '("~/org/listibles/movies-and-tv.org")))
          )
 	)
 )
@@ -1286,7 +1312,7 @@ See also: https://stackoverflow.com/questions/9547912/emacs-calendar-show-more-t
 (require 'org-gcal)
 (setq org-gcal-client-id "935116837597-uq64hfuicj3s4u9ugptqsb035m02ni2v.apps.googleusercontent.com"
       org-gcal-client-secret "YldSJ452JQrHC9yE1mr8kBIW"
-      org-gcal-file-alist '(("santhosh.kris@gmail.com" .  "~/org/gtd/personal-cal.org")))
+      org-gcal-file-alist '(("santhosh.kris@gmail.com" .  "~/org/listibles/cal/personal-cal.org")))
 ;;(add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync) ))
 ;;(add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync) ))
 
@@ -1361,35 +1387,35 @@ EAF configurations - Emacs Application Framework - Amazing stuff!!
 Don't use them as much. Commenting them out.
 
 #+Begin_src emacs-lisp
-;; (when (not (string= platform "TERMUX"))
-;; (add-to-list 'load-path "~/.emacs.d/.local/straight/repos/eaf/")
-;; (require 'eaf)
-;; (require 'eaf-browser)
-;; (require 'eaf-pdf-viewer)
+(when (not (string= platform "TERMUX"))
+(add-to-list 'load-path "~/.emacs.d/site-lisp/emacs-application-framework/")
+(require 'eaf)
+(require 'eaf-browser)
+(require 'eaf-pdf-viewer)
 
-;; (use-package eaf
-;;   :custom
-;;   (eaf-browser-continue-where-left-off t)
-;;   :config
-;;   (setq eaf-browser-enable-adblocker t)
-;;   (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
-;;   (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
-;;   (eaf-bind-key nil "M-q" eaf-browser-keybinding))
+(use-package eaf
+  :custom
+  (eaf-browser-continue-where-left-off t)
+  :config
+  (setq eaf-browser-enable-adblocker t)
+  (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key nil "M-q" eaf-browser-keybinding))
 
-;;   (require 'eaf-evil)
+  (require 'eaf-evil)
 
-;; (define-key key-translation-map (kbd "SPC")
-;;     (lambda (prompt)
-;;       (if (derived-mode-p 'eaf-mode)
-;;           (pcase eaf--buffer-app-name
-;;             ("browser" (if  (string= (eaf-call-sync "call_function" eaf--buffer-id "is_focus") "True")
-;;                            (kbd "SPC")
-;;                          (kbd eaf-evil-leader-key)))
-;;             ("pdf-viewer" (kbd eaf-evil-leader-key))
-;;             ("image-viewer" (kbd eaf-evil-leader-key))
-;;             (_  (kbd "SPC")))
-;;         (kbd "SPC"))))
-;; )
+(define-key key-translation-map (kbd "SPC")
+    (lambda (prompt)
+      (if (derived-mode-p 'eaf-mode)
+          (pcase eaf--buffer-app-name
+            ("browser" (if  (string= (eaf-call-sync "call_function" eaf--buffer-id "is_focus") "True")
+                           (kbd "SPC")
+                         (kbd eaf-evil-leader-key)))
+            ("pdf-viewer" (kbd eaf-evil-leader-key))
+            ("image-viewer" (kbd eaf-evil-leader-key))
+            (_  (kbd "SPC")))
+        (kbd "SPC"))))
+)
 #+END_SRC
 
 * EMAIL

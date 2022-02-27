@@ -114,3 +114,8 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias ec='emacsclient -n -c'
 alias cls=clear
+alias dk=docker
+alias dki="docker images"
+
+eval "$(ssh-agent -s)"
+ssh-add -K ~/.ssh/id_ed25519

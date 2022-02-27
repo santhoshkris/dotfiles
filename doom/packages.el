@@ -71,3 +71,4 @@
 (package! modus-themes)
 (package! gradle-mode)
 (package! pacmacs)
+(package! all-the-icons-ivy-rich)
