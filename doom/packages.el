@@ -60,7 +60,7 @@
 (package! emojify)
 (package! ivy-posframe)
 (package! visual-fill-column)
-(package! eaf)
+;;(package! eaf)
 (package! dap-mode)
 (package! org-gcal)
 (package! sudoku)

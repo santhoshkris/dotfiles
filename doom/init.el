@@ -209,7 +209,7 @@
 
        :app
        ;;org-gcal
-       eaf
+       ;;eaf
        emms
        sudoku
        pacmacs
