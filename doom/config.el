@@ -14,7 +14,7 @@
 
 ;;(gcmh-mode 1)
 
- ;; (use-package modus-themes
+;; (use-package modus-themes
  ;; :init
  ;; ;; Add all your customizations prior to loading the themes
  ;;  (setq modus-themes-italic-constructs t
@@ -1478,6 +1478,8 @@
 ;; Hide the menu for as minimalistic a startup screen as possible.
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 
+(setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+
 (defun enable_word_wrap()
   (setq-default word-wrap t)
   (setq fill-column 90)
@@ -1499,6 +1501,7 @@
       (:desc "Recent files" "f r" #'counsel-recentf)
       (:desc "Switch to buffer" "b i" #'counsel-switch-buffer)
 )
+(global-set-key (kbd "C-M-s-o") 'ace-window)
 
 ;;(map! :leader
 ;;      :desc "Search this buffer" "s b" #'consult-line)
