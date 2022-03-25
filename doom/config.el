@@ -1478,7 +1478,9 @@
 ;; Hide the menu for as minimalistic a startup screen as possible.
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 
+;;ace-window
 (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+(setq aw-dispatch-always t)
 
 (defun enable_word_wrap()
   (setq-default word-wrap t)
